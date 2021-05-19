@@ -14,9 +14,9 @@ router.get('/signup', function (req, res) {
 
 router.post('/signup',
       // username must be an email
-       body('firstname').isNumeric(),
-       body('middlename').isNumeric(),
-       body('lastname').isNumeric(),
+       body('firstname').exists(),
+       body('middlename').exists(),
+       body('lastname').exists(),
        body('regnumber').isNumeric(),
        body('yearofstudy').isNumeric(),
       // password must be at least 5 chars long
@@ -40,4 +40,13 @@ router.post('/signup',
 },
 )
 
+router.get('/', function(req, res, next) {
+  res.render('login');
+  
+})
+
+router.post('/',
+   userController.userLogin)
+
 module.exports = router;
+
