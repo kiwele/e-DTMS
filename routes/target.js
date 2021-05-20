@@ -6,4 +6,5 @@ module.exports = [
      loginRouter = require('./login'),
      createdoc = require('./create_document'),
      viewdoc = require('./view_documents'),
+     receivedoc = require('./secretary'),
 ]

@@ -82,18 +82,18 @@
         <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
           <span class="dropdown-item dropdown-header">15 Notifications</span>
           <div class="dropdown-divider"></div>
-          <a href="#" class="dropdown-item">
-            <i class="fas fa-envelope mr-2"></i> 4 new messages
+          <a href="receive_document" class="dropdown-item">
+            <i class="fas fa-envelope mr-2"></i> document
             <span class="float-right text-muted text-sm">3 mins</span>
           </a>
           <div class="dropdown-divider"></div>
-          <a href="#" class="dropdown-item">
-            <i class="fas fa-users mr-2"></i> 8 friend requests
+          <a href="receive_document" class="dropdown-item">
+            <i class="fas fa-users mr-2"></i> message
             <span class="float-right text-muted text-sm">12 hours</span>
           </a>
           <div class="dropdown-divider"></div>
-          <a href="#" class="dropdown-item">
-            <i class="fas fa-file mr-2"></i> 3 new reports
+          <a href="receive_document" class="dropdown-item">
+            <i class="fas fa-file mr-2"></i> document
             <span class="float-right text-muted text-sm">2 days</span>
           </a>
           <div class="dropdown-divider"></div>
@@ -206,13 +206,18 @@
         
         <!-- /.card-header -->
         <!-- form start -->
-        <form action="/create" method="post" >
+        <form >
+
+
           <div class="card-body">
-           
+              
+           <div class="form-group">
+               <label>Document ID : <b>12456</b></label>
+           </div>
 
             <div class="form-group">
-              <label>Document name</label>
-              <select name="docType" class="form-control select2bs4 select2-hidden-accessible" style="width: 100%;" data-select2-id="17" tabindex="-1" aria-hidden="true">
+              <label>Send to</label>
+              <select class="form-control select2bs4 select2-hidden-accessible" style="width: 100%;" data-select2-id="17" tabindex="-1" aria-hidden="true">
                 <option selected="selected" data-select2-id="19">--select-- </option>
                 <option data-select2-id="32">Postpone studies</option>
                 <option data-select2-id="33">resume studies</option>
@@ -222,29 +227,21 @@
                 
               </select>
              </div>  
-            
-            
-            <div class="form-group">
-              <label for="exampleInputFile">File input</label>
-              <div class="input-group">
-                <div class="custom-file">
-                  <input type="file" class="custom-file-input" id="exampleInputFile">
-                  <label class="custom-file-label" for="exampleInputFile">Choose file</label>
-                </div>
-                <div class="input-group-append">
-                  <span class="input-group-text">Upload</span>
-                </div>
+
+
+             <div class="form-group">
+                <label>Coments</label>
+                <textarea class="form-control" rows="3" placeholder="Enter ..."></textarea>
               </div>
-            </div>
-            <div class="form-check">
-              <input type="checkbox" class="form-check-input" id="exampleCheck1">
-              <label class="form-check-label" for="exampleCheck1">Check me out</label>
-            </div>
-          </div>
-          <!-- /.card-body -->
+            
+            
+              
+              
 
           <div class="card-footer">
-            <button type="submit" class="btn btn-primary">Submit</button>
+            <button type="submit" class="btn btn-primary">Cansel</button>
+
+            <button type="submit" class="btn btn-primary">Send</button>
           </div>
         </form>
       </div>
