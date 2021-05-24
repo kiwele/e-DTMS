@@ -6,7 +6,7 @@ var conn = mysql.createConnection({
   database: 'edtms' // // Replace with your database Name
 }); 
 conn.connect(function(err) {
-  if (err) throw err;
+  if(err)throw err;
   console.log('Database is connected successfully !');
 });
 module.exports = conn;

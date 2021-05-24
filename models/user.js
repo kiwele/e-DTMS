@@ -43,4 +43,26 @@ module.exports.userLogin = function (credentials,callback) {
       return callback(data);
   });
   
+} 
+module.exports.appload = (info)=>{
+
+  
+
+  const imageinfo ={ 
+     
+    name:info.docname,
+    filename:info.filee.filename,
+ 
+               };
+
+
+  
+
+var sql = "INSERT INTO images SET ?";
+db.query(sql,imageinfo, function (err, data) {
+if (err) throw err;
+console.log("document created successsifylly");
+});
+
+
 }
