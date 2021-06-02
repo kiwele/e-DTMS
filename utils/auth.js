@@ -2,15 +2,25 @@ var jwt = require("jsonwebtoken")
 var env = require('dotenv')
 
 env.config()
-module.exports.token = function ({ id, email }) {
+module.exports.token = function ({ id }) {
     // expire after one hour
-    let after = 3600000;
     return jwt.sign({
-        id, email
-    }, proces.env.SECRET, { expiresIn: new Date.now() + after });
+        username: id,
+    }, process.env.SECRET, { expiresIn: "1h" });
 }
 
-module.exports.verity = function (token) {
-    // return boolean value
-    return jwt.verify(token, process.env.SECRET)
+module.exports.verify = function (req, res, next) {
+    const token = req.headers.cookie.split('=');
+    const { error } = jwt.verify(token[1], process.env.SECRET)
+    if (error) {
+        res.redirect('/')
+    } else {
+        next();
+    }
+}
+
+module.exports.details = function (req) {
+    const token = req.headers.cookie.split('=');
+    let data = jwt.verify(token[1], process.env.SECRET)
+    return { username: data.username }
 }

@@ -186,7 +186,7 @@
             
             <div class="card">
               <div class="card-header">
-                <h3 class="card-title">List of documents you created </h3>
+                <h3 class="card-title">List of documents you created  <label style="justify-content: center;"><%=username%></label> </h3>
               </div>
               <!-- /.card-header -->
               <div class="card-body">
@@ -197,27 +197,30 @@
                     <th>Name</th>
                     <th>Date created</th>
                     <th>Status</th>
+                    <th>Action</th>
                     
                   </tr>
                   </thead>
                   <tbody>
-                  <tr>
-                    <td>125364</td>
-                    <td>Postpone studies
-                    </td>
-                    <td>20-12-2007</td>
-                    <td> in process...</td>
-                  
-                  </tr>
-                  <tr>
-                    <td>125362</td>
-                    <td>Resume studes
-                    </td>
-                    <td>16-8-2008</td>
-                    <td>completed</td>
+
+                    <% if(fetchData.length !=0){  
+                     
+                    fetchData.forEach(function(data){
+                     %>
+                      <tr>
+                        <td><%= data.document_id%></td>
+                        <td><%=data.type_name%> </td>
+                        <td><%=data.date_created%></td>
+                        <td><%=data.status_name%> </td>
+                        <td><button class="primary" ><a href="/aploads/<%= data.document_id%>">view</a></button></td>
+                      </tr>
+                  <%
+                    });
+                  } 
+                    %>
                     
-                  </tr>
                   
+                
                  
                   </tfoot>
                 </table>

@@ -1,10 +1,11 @@
 var express = require('express');
 var router = express.Router();
+var userController =require('../controllers/user')
+var userModels = require('../models/user')
+var auth = require('../utils/auth')
 
-/* GET home page. */
-router.get('/view_documents', function(req, res, next) {
-  res.render('view_documents');
+
   
-});
+  router.get('/view_documents',auth.verify, userController.viewDocument);
 
 module.exports = router;

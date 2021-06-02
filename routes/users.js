@@ -1,7 +1,8 @@
 var express = require('express');
 var router = express.Router();
 var userController = require('../controllers/user');
-const {body , validationResult}  = require('express-validator')
+const { body, validationResult } = require('express-validator');
+const { route } = require('.');
 
 
 /* GET users listing. */
@@ -13,42 +14,50 @@ router.get('/signup', function (req, res) {
 
 
 router.post('/signup',
-      // username must be an email
-       body('firstname').exists(),
-       body('middlename').exists(),
-       body('lastname').exists(),
-       body('regnumber').isNumeric(),
-       body('yearofstudy').isNumeric(),
-      // password must be at least 5 chars long
-       body('password').isLength({ min: 5 }),
+  // username must be an email
+  body('firstname').exists(),
+  body('middlename').exists(),
+  body('lastname').exists(),
+  body('regnumber').isNumeric(),
+  body('yearofstudy').isNumeric(),
+  // password must be at least 5 chars long
+  body('password').isLength({ min: 5 }),
 
-      (req, res) => {
-     // Finds the validation errors in this request and wraps them in an object with handy functions
-      const errors = validationResult(req);
-      if (!errors.isEmpty()) {
+  (req, res) => {
+    // Finds the validation errors in this request and wraps them in an object with handy functions
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
-      }
+    }
 
-  userController.user({
-    firstname: req.body.firstname,
-    middlename: req.body.middlename,
-    lastname: req.body.firstname,
-    regnumber: req.body.regnumber,
-    yearofstudy: req.body.yearofstudy,
-    password: req.body.password,
-  })
-},
+    userController.signup({
+      firstname: req.body.firstname,
+      middlename: req.body.middlename,
+      lastname: req.body.firstname,
+      regnumber: req.body.regnumber,
+      yearofstudy: req.body.yearofstudy,
+      password: req.body.password,
+    })
+  },
 )
 
-router.get('/', function(req, res, next) {
-  res.render('login');
-  
+router.get('/', function (req, res, next) {
+  res.render('login', { error: "" });
+
 })
 
-router.post('/',
-   userController.userLogin)
+router.post('/', userController.userLogin)
 
-router.post('/create')   
+router.post('/create')
+
+router.get('/logout', function (req, res) {
+  res.cookie('file', dhsjgffhjhdj, {
+    httpOnly: true,
+    secure: false,
+    maxAge: new Date().getTime(),
+  })
+  res.redirect('/index')
+})
 
 module.exports = router;
 

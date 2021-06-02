@@ -1,32 +1,43 @@
-var multer  = require('multer')
+var multer = require('multer')
 var express = require('express')
 var router = express.Router()
 var applController = require('../controllers/appload')
 var userModels = require('../models/user')
+var auth = require('../utils/auth')
 
 
 
-router.get('/create_document', (req, res) => {
-        res.render('create_document')
-   });
+router.get('/create_document',auth.verify,(req, res) => {
+  let data = auth.details(req);
+  res.render('create_document', {message:"",username:data.username})
+});
 
-router.post('/create_document',multer({storage:applController.image(), fileFilter: 
-  (req,file, cb) => {
-    if(file.mimetype !=="application/pdf"){
+router.post('/create_document',auth.verify, multer({
+  storage: applController.document(), fileFilter:
+    (req, file, cb) => {
+      if (file.mimetype !== "application/pdf") {
         req.fileValidationError = "goes wrong on the mime type";
         return cb(null, false, new Error("goes wrong on the mime type"));
-        
-    }
-    cb(null, true);
-}
-}).single("file"), 
-       function (req, res, next) {
-     docname = req.body.docType;
-     filee =req.file;
 
-     info = { docname,filee};
-     userModels.appload(info);
-    
+      }
+      cb(null, true);
+    }
+}).single("file"),
+  function (req, res, next) {
+    let data = auth.details(req);
+    docname = req.body.docType;
+    filee = req.file;
+    username = data.username;
+  
+    info = { docname, filee, username };
+    userModels.appload(info, function (error, data) {
+      
+    });
+  
+  res.render("create_document", 
+  { message: "Congratulations!! document sumitted successifully.", 
+  username:data.username   });
+
   })
 
-  module.exports = router
+module.exports = router
