@@ -1,6 +1,7 @@
 const { date } = require('joi');
 var db = require('../database')
 var userController = ('../controllers/user')
+var auth = require('../utils/auth')
 
 module.exports.signup = function (data) {
   // login credentials insertion
@@ -88,11 +89,10 @@ module.exports.appload = (info, callback) => {
   }
   
 module.exports.viewDocument = (callback) => {
-
-  sql = 'select document.document_id, document_type.type_name,document.date_created,document_status.status_name from document INNER JOIN document_type ON document.type_id = document_type.type_id INNER JOIN document_status ON  document.status_id=document_status.status_id';
-  db.query(sql, function (err, data, fields) {
+  sql ='select document.document_id, document_type.type_name,document.date_created,document_status.status_name from document INNER JOIN document_type ON document.type_id = document_type.type_id INNER JOIN document_status ON  document.status_id=document_status.status_id';
+  db.query(sql, function (err, data) {
     if (err) throw err;
+    console.log(data)
     return callback(data);
   });
 }
-
