@@ -89,7 +89,7 @@ module.exports.appload = (info, callback) => {
   
 module.exports.viewDocument = (callback) => {
 
-  sql = ' select document.document_id, document_type.type_name,document.date_created,document_status.status_name from document INNER JOIN document_type ON document.type_id = document_type.type_id INNER JOIN document_status ON  document.status_id=document_status.status_id';
+  sql = 'select document.document_id, document_type.type_name,document.date_created,document_status.status_name from document INNER JOIN document_type ON document.type_id = document_type.type_id INNER JOIN document_status ON  document.status_id=document_status.status_id';
   db.query(sql, function (err, data, fields) {
     if (err) throw err;
     return callback(data);

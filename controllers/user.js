@@ -45,7 +45,12 @@ module.exports.userLogin = function (req, res) {
                                 secure: false,
                                 maxAge: new Date().getTime() + after,
                             })
-                            res.redirect('/index')
+                            if(credentials.user_id != 10 && credentials.user_id != 20){
+                                res.redirect('/index2')
+                            } else{
+
+                                res.redirect('/index')    
+                            }
 
                         } else {
                             res.render("login", { error: "Invalid username or password." })
