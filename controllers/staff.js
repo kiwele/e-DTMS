@@ -3,21 +3,10 @@ var auth = require('../utils/auth')
 
 //fetching document info from database
 module.exports.viewDocument = (req, res) => {
-    let info = auth.details(req);
-    userModels.viewDocument(info.username, function (data) {
-        res.render('staff_view_document', { fetchData: data });
-    });
-}
-
-// view documents received to staff
-module.exports.receiveDocument =
-
-    (req, res) => {
-    let info = auth.details(req)
-    userModels.viewDocument(info.username,function (data) {   
-        res.render('receive_document', { fetchData: data,notifications});
-
-    });
+    // let info = auth.details(req);
+    // userModels.viewDocument(info.username, function (data) {
+    //     res.render('staff_view_document', { fetchData: data });
+    // });
 }
 
 module.exports.natification = ({ user_id }) => {

@@ -91,6 +91,14 @@ module.exports.appload = (info, callback) => {
 
 // viewing documents form documents movement table
 module.exports.viewDocument = (userinfo, callback) => {
+  sql = 'SELECT * FROM document_movement where user_id =? and read_status = 0';
+  db.query(sql, userinfo, function (err, data) {
+    if (err) throw err;
+    return callback(data);
+  });
+}
+
+module.exports.receiveDocument =  (userinfo, callback) => {
   sql = 'SELECT * FROM document_movement where document_destination =? and read_status = 0';
   db.query(sql, userinfo, function (err, data) {
     if (err) throw err;

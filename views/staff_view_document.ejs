@@ -63,33 +63,27 @@
       </li>
 
       
-       <!-- Notifications Dropdown Menu -->
-       <li class="nav-item dropdown">
-        <a class="nav-link" data-toggle="dropdown" href="#">
-          <i class="far fa-bell"></i>
-          <span class="badge badge-warning navbar-badge">3</span>
-        </a>
-        <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
-          <span class="dropdown-item dropdown-header">3 new documents</span>
-          <div class="dropdown-divider"></div>
-          <a href="receive_document" class="dropdown-item">
-            <i class="fas fa-envelope mr-2"></i> 2 postpone studies
-            <span class="float-right text-muted text-sm">3 mins</span>
-          </a>
-          <div class="dropdown-divider"></div>
-          <a href="receive_document" class="dropdown-item">
-            <i class="fas fa-users mr-2"></i> 1 special test
-            <span class="float-right text-muted text-sm">2 hours</span>
-          </a>
-          <div class="dropdown-divider"></div>
-          <a href="receive_document" class="dropdown-item">
-            <i class="fas fa-file mr-2"></i> 2 resume studies
-            <span class="float-right text-muted text-sm">2 days</span>
-          </a>
-          <div class="dropdown-divider"></div>
-          <a href="#" class="dropdown-item dropdown-footer">See All Notifications</a>
-        </div>
-      </li>
+     <!-- Notifications Dropdown Menu -->
+ <li class="nav-item dropdown">
+  <a class="nav-link" data-toggle="dropdown" href="#">
+    <i class="far fa-bell"></i>
+    <span class="badge badge-warning navbar-badge">
+      <%= notifications.total %>
+    </span>
+  </a>
+  <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
+    <span class="dropdown-item dropdown-header">
+      <%= notifications.total %> new documents
+    </span>
+    <% for(item in notifications.notifications){ %>
+      <div class="dropdown-divider"></div>
+      <a href="receive_document" class="dropdown-item">
+        <i class="fas fa-envelope mr-2"></i> <%= notifications.notifications[item]['total'] %> <%= notifications.notifications[item]['type_name'] %>
+      </a>
+      <% } %>
+       
+  </div>
+</li>
 
       <li class="nav-item">  
         <!-- Sidebar user panel (optional) -->
@@ -193,10 +187,12 @@
                     <th>Name</th>
                     <th>Date created</th>
                     <th>Status</th>
+                    <th>Action</th>
                     
                   </tr>
                   </thead>
                   <tbody>
+                   
 
                     <% if(fetchData.length !=0){  
                      
@@ -207,6 +203,13 @@
                         <td><%=data.type_name%> </td>
                         <td><%=data.date_created%></td>
                         <td><%=data.status_name%> </td>
+                        <td> 
+                          <!-- Button trigger modal-->
+                          <button type="button" class="btn btn-sm btn-primary font-weight-bolder" data-toggle="modal"
+                          data-target="#track-document-modal">
+                          Track
+                          </button>
+                        </td>
                       </tr>
                   <%
                     });
@@ -231,6 +234,79 @@
     </section>
     <!-- /.content -->
   </div>
+
+                  <!-- begin::of Track document Modal-->
+                  <div class="modal fade" id="track-document-modal" tabindex="-1" role="dialog"
+                  aria-labelledby="staticBackdrop" aria-hidden="true">
+                 <div class="modal-dialog modal-dialog-scrollable" role="document">
+                     <div class="modal-content">
+                         <div class="modal-header">
+                             <h5 class="modal-title" id="exampleModalLabel">Track document movement here</h5>
+                             <button type="button" class="close" data-dismiss="modal"
+                                     aria-label="Close">
+                                 <i aria-hidden="true" class="ki ki-close"></i>
+                             </button>
+                         </div>
+                         <div class="modal-body" style="height: 300px;">
+
+                             <form class="form" id="add-product-form" name="add-product-form">
+                                 <div class="card-body">
+                                     <div class="form-group">
+                                         <label>Product name:</label>
+                                         <input type="text"
+                                                class="form-control form-control-solid"
+                                                placeholder="Enter product name"
+                                                name="product_name" id="product-name"/>
+                                     </div>
+
+
+                                     <div class="form-group">
+                                         <label>Category name </label>
+                                         <select class="form-control form-control-lg"
+                                                 id="product-category-name">
+                                             // category_select function in js
+
+
+                                         </select>
+                                     </div>
+
+                                     <div class="form-group">
+                                         <label>Metric </label>
+                                         <select class="form-control form-control-lg"
+                                                 id="product-metric-name"
+                                                 name="product_metric_name"
+
+                                         >
+                                             
+
+
+                                         </select>
+                                     </div>
+
+                                     <div class="form-group">
+                                         <label>quantity</label>
+                                         <input type="number"
+                                                class="form-control form-control-solid"
+                                                placeholder="Enter quantity" name="product_quantity"
+                                                id="product-quantity"/>
+                                     </div>
+
+
+                                 </div>
+                             </form>
+
+                         </div>
+                         <div class="modal-footer">
+                             <button type="button" class="btn btn-light-primary font-weight-bold"
+                                     data-dismiss="modal">Close
+                             </button>   
+                         </div>
+                     </div>
+                 </div>
+             </div>
+
+             <!--end::of track document  modal-->
+
   <!-- /.content-wrapper -->
   <footer class="main-footer">
     <strong>Copyright &copy; e-DTMS<a href="https://udsm.co.tz"> University of Dar es salaam</a>.</strong>

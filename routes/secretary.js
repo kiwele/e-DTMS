@@ -15,27 +15,34 @@ router.get('/index2', async (req, res, next) => {
 })
 
 
-router.get('/staff_create_document', (req, res) => {
-    res.render('staff_create_document', { message: "" })
+router.get('/staff_create_document', async (req, res) => {
+
+    let { username } = jwt.verify(req.cookies.file, process.env.SECRET)
+    const notifications = await staffController.natification({ user_id: username })
+
+    res.render('staff_create_document', { message: "", notifications })
 })
 
 //gettind received page
 
-router.get('/receive_document',auth.verify,staffController.receiveDocument, 
-async (req, res, next) => {
-    let { username } = jwt.verify(req.cookies.file, process.env.SECRET)
-    const notifications = await staffController.natification({ user_id: username })
-    
-    res.render('receive_document', { notifications});
-})
+router.get('/receive_document', async (req, res) => {
+        let { username } = jwt.verify(req.cookies.file, process.env.SECRET)
+        const notifications = await staffController.natification({ user_id: username })
+
+        userModels.receiveDocument(username, function (data) {
+            res.render('receive_document', { notifications, fetchData: data });
+        });
+    })
 
 // geting approve page
-router.get('/approve', (req, res) => {
-    res.render('approve', { data: req.query.take, message: "" });
+router.get('/approve', async (req, res) => {
+    let { username } = jwt.verify(req.cookies.file, process.env.SECRET)
+        const notifications = await staffController.natification({ user_id: username })
+    res.render('approve', { data: req.query.take, message: "", notifications });
 })
 
 // approving the documents
-router.post('/approve', (req, res, next) => {
+router.post('/approve', async (req, res, next) => {
 
     let user_id = auth.details(req)
     var approveInfo = {
@@ -46,12 +53,21 @@ router.post('/approve', (req, res, next) => {
         coment: req.body.coment,
     }
     userModels.approveDocument(approveInfo)
-    res.render('approve', { data: "", message: "Congratulations document has been approved" });
+    let { username } = jwt.verify(req.cookies.file, process.env.SECRET)
+        const notifications = await staffController.natification({ user_id: username })
+        res.render('approve', { data: "", message: "Congratulations document has been approved" ,notifications});
 })
 
 
+router.get('/staff_view_document', async (req, res)=>{
 
+    
+        let { username } = jwt.verify(req.cookies.file, process.env.SECRET)
+        const notifications = await staffController.natification({ user_id: username })
 
-router.get('/staff_view_document', auth.verify, staffController.viewDocument)
+         userModels.viewDocument(username, function (data) {
+        res.render('staff_view_document', { fetchData: data, notifications });
+    });        
+})
 
 module.exports = router;
