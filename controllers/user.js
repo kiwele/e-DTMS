@@ -69,12 +69,9 @@ module.exports.userLogin = function (req, res) {
 
 //fetching document info from database
 module.exports.viewDocument = (req, res) => {
-
-    userModels.viewDocument(function (data) {
-        let info = auth.details(req);
+    let info = auth.details(req);
+     
+    userModels.viewDocument(info.username,function (data) {        
         res.render('view_documents', { fetchData: data, username: info.username });
-
-
     });
-
 }

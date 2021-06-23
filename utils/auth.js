@@ -22,5 +22,6 @@ module.exports.verify = function (req, res, next) {
 module.exports.details = function (req) {
     const token = req.headers.cookie.split('=');
     let data = jwt.verify(token[1], process.env.SECRET)
+    
     return { username: data.username }
 }

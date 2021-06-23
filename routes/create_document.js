@@ -30,13 +30,21 @@ router.post('/create_document',auth.verify, multer({
     username = data.username;
   
     info = { docname, filee, username };
-    userModels.appload(info, function (error, data) {
-      
-    });
+    userModels.appload(info, function (error, data) {});
+
+//getting back to document creation page    
+    if(username != 10 && username != 20){
+      res.redirect('/staff_create_document')
+      res.render("staff_create_document", 
+      { message: "Congratulations!! document sumitted successifully." });
+  } else{
+    
+    res.render("create_document", 
+    { message: "Congratulations!! document sumitted successifully.", 
+    username:data.username   });  
+  }
   
-  res.render("create_document", 
-  { message: "Congratulations!! document sumitted successifully.", 
-  username:data.username   });
+  
 
   })
 
