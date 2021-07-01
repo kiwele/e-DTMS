@@ -6,5 +6,6 @@ module.exports = [
      createdoc = require('./create_document'),
      viewdoc = require('./view_documents'),
      receivedoc = require('./secretary'),
+     document = require('./document'),
      
 ]

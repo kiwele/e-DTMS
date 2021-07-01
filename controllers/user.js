@@ -45,11 +45,11 @@ module.exports.userLogin = function (req, res) {
                                 secure: false,
                                 maxAge: new Date().getTime() + after,
                             })
-                            if(credentials.user_id != 10 && credentials.user_id != 20){
+                            if (credentials.user_id != 10 && credentials.user_id != 20 && credentials.user_id != 100) {
                                 res.redirect('/index2')
-                            } else{
+                            } else {
 
-                                res.redirect('/index')    
+                                res.redirect('/index')
                             }
 
                         } else {
@@ -67,5 +67,16 @@ module.exports.userLogin = function (req, res) {
     }
 }
 
-//fetching document info from database
-// module.exports.viewDocument = 
+
+module.exports.trackDocument = function (document_id) {
+    return new Promise(async (reject, resolve) => {
+        try {
+            const result = await userModels.trackDocument(document_id);
+            resolve(result)
+        }
+        catch (error) {
+            reject(error)
+        }
+    })
+}
+

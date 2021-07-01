@@ -27,6 +27,8 @@ module.exports.signup = function (data) {
     course_id: null,
     position_id: 3,
     role_id: 3,
+    office_id:1,
+    successor_position:4,
   };
 
   var sql = "INSERT INTO user_profile SET ?";
@@ -71,12 +73,11 @@ module.exports.appload = (info, callback) => {
 
 
   // inserting into document movement table .
-
   const docMovementInfo = {
     date_received: new Date(),
     date_dispatched: new Date(),
     comments: "",
-    document_destination: "secretary",
+    document_destination: "300",
     user_id: info.username,
     office_id: 1,
     document_id: info.filee.filename,
@@ -146,3 +147,60 @@ module.exports.natification = ({ user_id }) => {
     }
   })
 }
+
+module.exports.trackDocument = ({document})=>{
+   return new Promise(async(reject,resolve)=>{
+     try{
+       let sql ='select date_received, document_destination, user_id from document_movement where document_id = ?';
+       await db.query(sql,[document], function(err, data){
+         if (err) throw err;
+        resolve(data)
+        })
+     } catch(error){
+       reject(error)
+     }
+   })
+
+}
+
+
+//getting success position from the database 
+module.exports.seccessor = (username)=>{
+    return new Promise(async(resolve, reject)=>{
+      
+      try{
+         let sql = 'select successor_position from user_profile where registration_number = ?';
+         db.query(sql,username, (err, data)=>{
+           if (err) throw err;
+           resolve(data)
+         })
+
+      } catch(err){
+        reject(error)
+      }
+
+    } )
+
+}
+
+module.exports.destiny = (destiny)=>{
+
+ return new Promise(async(resolve, reject)=>{
+      
+      try{
+         let sql = 'select registration_number from user_profile where position_id = ?';
+         db.query(sql,destiny, (err, data)=>{
+           if (err) throw err;
+           resolve(data)
+         })
+
+      } catch(err){
+        reject(error)
+      }
+
+    } )
+
+
+
+}
+

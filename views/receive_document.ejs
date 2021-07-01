@@ -214,11 +214,12 @@
                           </td>
                           <td>
                             <div class="btn-group">
-                              <a href="/aploads/<%= data.document_id%>" class="btn btn-sm btn-primary">view</a>
+                              <a href="/aploads/<%= data.document_id%>" class="btn btn-sm btn-primary">Preview</a>
                               <form action="/approve">
                                 <input name="take" value="<%= data.document_id %>" style="display: none;">
-                                <button type="submit" class="btn btn-sm btn-primary" style="margin-left: 5px;">approve</button>
+                                <button type="submit" class="btn btn-sm btn-primary" style="margin-left: 5px;">Cansel</button>
                               </form>
+                              <button type="submit" class="btn btn-sm btn-primary" style="margin-left: 5px;">approve</button>
                             </div>
                           </td>
 

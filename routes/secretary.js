@@ -6,6 +6,7 @@ var userModels = require('../models/user')
 var jwt = require('jsonwebtoken')
 var env = require('dotenv')
 var auth = require('../utils/auth')
+var userController = require('../controllers/user')
 
 env.config()
 router.get('/index2', async (req, res, next) => {
@@ -69,5 +70,10 @@ router.get('/staff_view_document', async (req, res)=>{
         res.render('staff_view_document', { fetchData: data, notifications });
     });        
 })
+router.get('/track/:document', auth.verify, async (req, res) => {
+    let  document_id =  req.params;
+    const trackInfo = await staffController.trackDocument(document_id);
+    res.status(200).json(trackInfo);
+  });
 
 module.exports = router;

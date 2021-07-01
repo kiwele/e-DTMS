@@ -20,3 +20,15 @@ module.exports.natification = ({ user_id }) => {
     })
 
 }
+
+module.exports.trackDocument = function (document_id) {
+    return new Promise(async (reject, resolve) => {
+        try {
+            const result = await userModels.trackDocument(document_id);
+            resolve(result)
+        }
+        catch (error) {
+            reject(error)
+        }
+    })
+}

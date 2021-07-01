@@ -15,7 +15,6 @@ router.get('/create_document',auth.verify, async (req, res) => {
   let data = auth.details(req);
   let { username } = jwt.verify(req.cookies.file, process.env.SECRET)
   const notifications = await staffController.natification({ user_id: username })
-  
   res.render('create_document', {message:"",username:data.username, notifications})
 });
 
@@ -35,12 +34,17 @@ router.post('/create_document',auth.verify, multer({
     docname = req.body.docType;
     filee = req.file;
     username = data.username;
+     const succ =  await userModels.seccessor(username);
+     console.log(succ)
+    //  let destiny = await userModels.destiny(successor);
+
   
-    info = { docname, filee, username };
-    userModels.appload(info, function (error, data) {});
+  
+    // info = { docname, filee, username };
+    // userModels.appload(info, function (error, data) {});
 
 //getting back to document creation page    
-    if(username != 10 && username != 20){
+    if(username != 10 && username != 20 && username != 100  ){
       
       let { username } = jwt.verify(req.cookies.file, process.env.SECRET)
       const notifications = await staffController.natification({ user_id: username })
@@ -58,8 +62,6 @@ router.post('/create_document',auth.verify, multer({
     username:data.username , notifications  });  
   }
   
-  
-
   })
 
 module.exports = router

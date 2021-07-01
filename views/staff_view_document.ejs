@@ -17,7 +17,7 @@
   <link rel="stylesheet" href="/dist/css/adminlte.min.css">
 </head>
 <body class="hold-transition sidebar-mini layout-fixed">
-<div class="wrapper">
+<div class="wrapper" id="container">
 
   <!-- Preloader -->
   <div class="preloader flex-column justify-content-center align-items-center">
@@ -164,62 +164,75 @@
     <!-- /.sidebar -->
   </aside>
 
-  <!-- Content Wrapper. Contains page content -->
-  <div class="content-wrapper">
-    
+   <!-- Content Wrapper. Contains page content -->
+   <div class="content-wrapper">
+
 
     <!-- Main content -->
     <section class="content">
       <div class="container-fluid">
         <div class="row">
-          <div class="col-12">
-            
+
+
+
+
+
+
+
+          <div class="col-md-12">
+
             <div class="card">
               <div class="card-header">
-                <h3 class="card-title">List of documents you created </h3>
+                <h3 class="card-title">List of documents you created <label style="justify-content: center;">
+                    
+                  </label> </h3>
               </div>
               <!-- /.card-header -->
               <div class="card-body">
                 <table id="example1" class="table table-bordered table-striped">
                   <thead>
-                  <tr>
-                    <th>ID</th>
-                    <th>Name</th>
-                    <th>Date created</th>
-                    <th>Status</th>
-                    <th>Action</th>
-                    
-                  </tr>
+                    <tr>
+                      <th>ID</th>
+                      <th>Name</th>
+                      <th>Date created</th>
+                      <th>Status</th>
+                      <th>Action</th>
+
+                    </tr>
                   </thead>
                   <tbody>
-                   
 
-                    <% if(fetchData.length !=0){  
-                     
-                    fetchData.forEach(function(data){
-                     %>
+                    <% if(fetchData.length !=0){ fetchData.forEach(function(data){ %>
                       <tr>
-                        <td><%= data.document_id%></td>
-                        <td><%=data.type_name%> </td>
-                        <td><%=data.date_created%></td>
-                        <td><%=data.status_name%> </td>
-                        <td> 
-                          <!-- Button trigger modal-->
-                          <button type="button" class="btn btn-sm btn-primary font-weight-bolder" data-toggle="modal"
-                          data-target="#track-document-modal">
-                          Track
-                          </button>
+                        <td>
+                          <%= data.document_id %>
                         </td>
+                        <td>
+                          <%=data.type_name%>
+                        </td>
+                        <td>
+                          <%=data.date_created%>
+                        </td>
+                        <td>
+                          <%=data.status_name%>
+                        </td>
+                        <td>
+                          <!-- Button trigger modal-->
+                          <button type="button" @click="track('<%= data.document_id %>')"
+                            class="btn btn-sm btn-primary font-weight-bolder" data-toggle="modal"
+                            data-target="#track-document-modal">
+                            Track
+                          </button>
+
+                        </td>
+
                       </tr>
-                  <%
-                    });
-                  } 
-                    %>
-                    
-                  
-                
-                 
-                  </tfoot>
+                      <% }); } %>
+
+
+
+
+                        </tfoot>
                 </table>
               </div>
               <!-- /.card-body -->
@@ -231,82 +244,55 @@
         <!-- /.row -->
       </div>
       <!-- /.container-fluid -->
+
+      <!-- begin::of Track document Modal-->
+      <div class="modal fade" id="track-document-modal" tabindex="-1" role="dialog" aria-labelledby="staticBackdrop"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">Track document movement here</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <i aria-hidden="true" class="ki ki-close"></i>
+              </button>
+            </div>
+            <div class="modal-body" style="height: 300px;">
+
+              <form class="form" id="add-product-form" name="add-product-form">
+                <div class="card-body">
+                  <div v-for="item in results">
+                    <div class="form-group">
+                      <label>From: {{ item.user_id }}</label>
+                    </div>
+                    <div class="form-group">
+                      <label>To: {{ item.document_destination }}</label>
+                    </div>
+
+                    <div class="form-group">
+                      <label>Date: {{ item.date_received }}</label>
+                    </div>
+
+                  </div>
+              </form>
+
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-light-primary font-weight-bold" data-dismiss="modal">Close
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!--end::of track document modal-->
+
+
+
+
+
     </section>
     <!-- /.content -->
   </div>
-
-                  <!-- begin::of Track document Modal-->
-                  <div class="modal fade" id="track-document-modal" tabindex="-1" role="dialog"
-                  aria-labelledby="staticBackdrop" aria-hidden="true">
-                 <div class="modal-dialog modal-dialog-scrollable" role="document">
-                     <div class="modal-content">
-                         <div class="modal-header">
-                             <h5 class="modal-title" id="exampleModalLabel">Track document movement here</h5>
-                             <button type="button" class="close" data-dismiss="modal"
-                                     aria-label="Close">
-                                 <i aria-hidden="true" class="ki ki-close"></i>
-                             </button>
-                         </div>
-                         <div class="modal-body" style="height: 300px;">
-
-                             <form class="form" id="add-product-form" name="add-product-form">
-                                 <div class="card-body">
-                                     <div class="form-group">
-                                         <label>Product name:</label>
-                                         <input type="text"
-                                                class="form-control form-control-solid"
-                                                placeholder="Enter product name"
-                                                name="product_name" id="product-name"/>
-                                     </div>
-
-
-                                     <div class="form-group">
-                                         <label>Category name </label>
-                                         <select class="form-control form-control-lg"
-                                                 id="product-category-name">
-                                             // category_select function in js
-
-
-                                         </select>
-                                     </div>
-
-                                     <div class="form-group">
-                                         <label>Metric </label>
-                                         <select class="form-control form-control-lg"
-                                                 id="product-metric-name"
-                                                 name="product_metric_name"
-
-                                         >
-                                             
-
-
-                                         </select>
-                                     </div>
-
-                                     <div class="form-group">
-                                         <label>quantity</label>
-                                         <input type="number"
-                                                class="form-control form-control-solid"
-                                                placeholder="Enter quantity" name="product_quantity"
-                                                id="product-quantity"/>
-                                     </div>
-
-
-                                 </div>
-                             </form>
-
-                         </div>
-                         <div class="modal-footer">
-                             <button type="button" class="btn btn-light-primary font-weight-bold"
-                                     data-dismiss="modal">Close
-                             </button>   
-                         </div>
-                     </div>
-                 </div>
-             </div>
-
-             <!--end::of track document  modal-->
-
   <!-- /.content-wrapper -->
   <footer class="main-footer">
     <strong>Copyright &copy; e-DTMS<a href="https://udsm.co.tz"> University of Dar es salaam</a>.</strong>
@@ -345,8 +331,31 @@
 <script src="/dist/js/adminlte.min.js"></script>
 <!-- AdminLTE for demo purposes -->
 <script src="/dist/js/demo.js"></script>
+<script src="/vue.js"></script>
+<script src="/axios.js"></script>
+
 <!-- Page specific script -->
 <script>
+  $(document).ready(function () {
+    let vm = new Vue({
+      el: "#container",
+      data: {
+        results: "",
+        document: "",
+      },
+      methods: {
+        track(document) {
+          axios.get(`/track/${document}`)
+            .then(({ data }) => {
+              this.results = data;
+            })
+            .catch(function (error) {
+              alert("Somethings went wrong.")
+            })
+        }
+      }
+    })
+  })
   $(function () {
     $("#example1").DataTable({
       "responsive": true, "lengthChange": false, "autoWidth": false,
@@ -364,4 +373,5 @@
   });
 </script>
 </body>
+
 </html>
