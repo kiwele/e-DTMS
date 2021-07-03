@@ -7,6 +7,10 @@ var jwt = require('jsonwebtoken')
 var env = require('dotenv')
 var auth = require('../utils/auth')
 var userController = require('../controllers/user')
+var multer = require('multer')
+var applController = require('../controllers/appload')
+
+
 
 env.config()
 router.get('/index2', async (req, res, next) => {
@@ -16,13 +20,13 @@ router.get('/index2', async (req, res, next) => {
 })
 
 
-router.get('/staff_create_document', async (req, res) => {
+// router.get('/staff_create_document', async (req, res) => {
 
-    let { username } = jwt.verify(req.cookies.file, process.env.SECRET)
-    const notifications = await staffController.natification({ user_id: username })
+//     let { username } = jwt.verify(req.cookies.file, process.env.SECRET)
+//     const notifications = await staffController.natification({ user_id: username })
 
-    res.render('staff_create_document', { message: "", notifications })
-})
+//     res.render('staff_create_document', { message: "", notifications })
+// })
 
 //gettind received page
 
@@ -36,33 +40,32 @@ router.get('/receive_document', async (req, res) => {
     })
 
 // geting approve page
-router.get('/approve', async (req, res) => {
+router.get('/cancel', async (req, res) => {
+    
     let { username } = jwt.verify(req.cookies.file, process.env.SECRET)
         const notifications = await staffController.natification({ user_id: username })
-    res.render('approve', { data: req.query.take, message: "", notifications });
+    res.render('cancel', { data: req.query.take[0],data1: req.query.take[1], message: "", notifications });
 })
 
 // approving the documents
-router.post('/approve', async (req, res, next) => {
+router.post('/cancel', async (req, res, next) => {
 
     let user_id = auth.details(req)
-    var approveInfo = {
+    var cancelInfo = {
         sender: user_id.username,
         document_id: req.body.document_id,
         user_id: user_id.username,
-        dest: req.body.destine,
+        dest: req.body.destin,
         coment: req.body.coment,
     }
-    userModels.approveDocument(approveInfo)
+    userModels.cancelDocument(cancelInfo)
     let { username } = jwt.verify(req.cookies.file, process.env.SECRET)
         const notifications = await staffController.natification({ user_id: username })
-        res.render('approve', { data: "", message: "Congratulations document has been approved" ,notifications});
+        res.render('cancel', { data: "",data1:"", message: "Congratulations document has been approved" ,notifications});
 })
 
 
-router.get('/staff_view_document', async (req, res)=>{
-
-    
+router.get('/staff_view_document', async (req, res)=>{  
         let { username } = jwt.verify(req.cookies.file, process.env.SECRET)
         const notifications = await staffController.natification({ user_id: username })
 
@@ -70,10 +73,76 @@ router.get('/staff_view_document', async (req, res)=>{
         res.render('staff_view_document', { fetchData: data, notifications });
     });        
 })
-router.get('/track/:document', auth.verify, async (req, res) => {
+
+router.get('/aprove/:document', async (req, res) => {
+    let user_id = auth.details(req);
+    let senderNumber = user_id.username;
     let  document_id =  req.params;
-    const trackInfo = await staffController.trackDocument(document_id);
-    res.status(200).json(trackInfo);
+    const succ =  await userModels.seccessor(senderNumber)     
+    let destiny = await userModels.destiny(succ);
+    const aproveData = {senderNumber , document_id, destiny}
+
+     await userModels.aproveButton(aproveData);   
   });
+
+
+  
+router.get('/feedback',auth.verify, async (req, res) => {
+ 
+    let data = auth.details(req);
+    let { username } = jwt.verify(req.cookies.file, process.env.SECRET)
+    const notifications = await staffController.natification({ user_id: username })
+    res.render('staff_create_document', {message:"",username:data.username, notifications})
+  });
+  
+  router.post('/feedback',auth.verify, multer({
+    storage: applController.document(), fileFilter:
+      (req, file,cb) => {
+        if (file.mimetype !== "application/pdf") {
+          req.fileValidationError = "goes wrong on the mime type";
+          return cb(null, false, new Error("goes wrong on the mime type"));
+          }
+        cb(null, true);
+      }
+  }).single("file"),
+    async (req, res, next) => {
+
+      let data = auth.details(req);
+
+      docname = req.body.docType;
+      office = req.body.office_id;
+      student_responded = req.body.student_no;
+      filee = req.file;
+      Sender_no = data.username;
+       
+     info = { docname, office, student_responded,filee,Sender_no};
+     userModels.respond(info, function (error, data) {});
+     
+  
+  //getting back to document creation page   
+  
+  let { username } = jwt.verify(req.cookies.file, process.env.SECRET)
+  const notifications = await staffController.natification({ user_id: username })
+
+  
+  res.render("staff_create_document", 
+  { message: "Congratulations!! document responded successifully.", notifications });
+  
+})
+
+router.get('/receive_response', async (req, res) => {
+    let { username } = jwt.verify(req.cookies.file, process.env.SECRET)
+    const notifications = await staffController.natification({ user_id: username })
+
+
+    let data = auth.details(req);
+    
+    const office_id = await userModels.giveOfficeId(data.username);
+
+    userModels.receiveResponce(office_id, function (data) {
+        res.render('response', { notifications, fetchData: data });
+    });
+})
+
 
 module.exports = router;

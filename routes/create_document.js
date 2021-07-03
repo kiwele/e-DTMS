@@ -20,28 +20,31 @@ router.get('/create_document',auth.verify, async (req, res) => {
 
 router.post('/create_document',auth.verify, multer({
   storage: applController.document(), fileFilter:
-    (req, file, cb) => {
+    (req, file,cb) => {
       if (file.mimetype !== "application/pdf") {
         req.fileValidationError = "goes wrong on the mime type";
         return cb(null, false, new Error("goes wrong on the mime type"));
-
-      }
+        }
       cb(null, true);
     }
-}).single("file"),
+}).array("file",5),
   async (req, res, next) => {
     let data = auth.details(req);
     docname = req.body.docType;
-    filee = req.file;
+    filee = req.files;
     username = data.username;
-     const succ =  await userModels.seccessor(username);
-     console.log(succ)
-    //  let destiny = await userModels.destiny(successor);
-
-  
-  
-    // info = { docname, filee, username };
-    // userModels.appload(info, function (error, data) {});
+    leter  = filee[0].filename;
+    supot1 = filee[1].filename;
+    supot2 = filee[2].filename;
+    
+    
+    const succ =  await userModels.seccessor(username);
+     
+    let destiny = await userModels.destiny(succ);
+     
+   info = { docname, leter, username, destiny,supot1,supot2 };
+   userModels.appload(info, function (error, data) {});
+   
 
 //getting back to document creation page    
     if(username != 10 && username != 20 && username != 100  ){

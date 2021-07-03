@@ -10,7 +10,6 @@ var jwt = require('jsonwebtoken')
   
   router.get('/view_documents',auth.verify,  async (req, res) => {
     let info = auth.details(req);
-
     let { username } = jwt.verify(req.cookies.file, process.env.SECRET)
     const notifications = await staffController.natification({ user_id: username })
     // const trackInfo = await userController.trackDocument(document_id);

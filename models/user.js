@@ -25,10 +25,10 @@ module.exports.signup = function (data) {
     year_of_study: data.yearofstudy,
     user_id: data.regnumber,
     course_id: null,
-    position_id: 3,
+    position_id: 4,
     role_id: 3,
-    office_id:1,
-    successor_position:4,
+    office_id:2,
+    successor_position:5,
   };
 
   var sql = "INSERT INTO user_profile SET ?";
@@ -55,10 +55,12 @@ module.exports.userLogin = function (credentials, callback) {
 module.exports.appload = (info, callback) => {
 
   const docinfo = {
-    document_id: info.filee.filename,
+    document_id: info.leter,
     date_created: new Date(),
     type_id: info.docname,
-    status_id: 0,
+    status_id:0,
+    support1:info.supot1,
+    support2:info.supot2,
   };
 
   var sql = "INSERT INTO document SET ?";
@@ -77,10 +79,10 @@ module.exports.appload = (info, callback) => {
     date_received: new Date(),
     date_dispatched: new Date(),
     comments: "",
-    document_destination: "300",
+    document_destination: info.destiny,
     user_id: info.username,
     office_id: 1,
-    document_id: info.filee.filename,
+    document_id: info.leter,
   };
 
   var sql = "INSERT INTO document_movement SET ?";
@@ -92,39 +94,84 @@ module.exports.appload = (info, callback) => {
 
 // viewing documents form documents movement table
 module.exports.viewDocument = (userinfo, callback) => {
-  sql = 'SELECT * FROM document_movement where user_id =? and read_status = 0';
+  sql = 'select distinct a.document_id, c.type_name,b.date_created,d.status_name FROM document_movement as a  JOIN document as b on a.user_id =? and a.document_id = b.document_id JOIN document_type as c ON b.type_id = c.type_id JOIN document_status as d ON d.status_id = b. status_id';
   db.query(sql, userinfo, function (err, data) {
     if (err) throw err;
     return callback(data);
   });
 }
 
+// receive all documents
 module.exports.receiveDocument =  (userinfo, callback) => {
-  sql = 'SELECT * FROM document_movement where document_destination =? and read_status = 0';
+  sql = 'select distinct  a.document_id, c.type_name,b.date_created, a.user_id FROM document_movement as a  JOIN document as b on a.document_destination =? and read_status = 0 and a.document_id = b.document_id JOIN document_type as c ON b.type_id = c.type_id';
+
   db.query(sql, userinfo, function (err, data) {
     if (err) throw err;
     return callback(data);
   });
 }
 
-module.exports.approveDocument = (approveInfo, callback) => {
+// receive only special test
+module.exports.specialTest =  (userinfo, callback) => {
+  sql = 'select distinct  a.document_id, c.type_name,b.date_created, a.user_id FROM document_movement as a  JOIN document as b on a.document_destination =? and read_status = 0 and b.type_id = 3  and a.document_id = b.document_id JOIN document_type as c ON b.type_id = c.type_id';
 
-  const approve = {
+  db.query(sql, userinfo, function (err, data) {
+    if (err) throw err;
+    return callback(data);
+  });
+}
+
+module.exports.specialExam =  (userinfo, callback) => {
+  sql = 'select distinct  a.document_id, c.type_name,b.date_created, a.user_id FROM document_movement as a  JOIN document as b on a.document_destination =? and read_status = 0 and b.type_id = 4  and a.document_id = b.document_id JOIN document_type as c ON b.type_id = c.type_id';
+
+  db.query(sql, userinfo, function (err, data) {
+    if (err) throw err;
+    return callback(data);
+  });
+}
+module.exports.postponeStudies =  (userinfo, callback) => {
+  sql = 'select distinct  a.document_id, c.type_name,b.date_created, a.user_id FROM document_movement as a  JOIN document as b on a.document_destination =? and read_status = 0 and b.type_id = 1  and a.document_id = b.document_id JOIN document_type as c ON b.type_id = c.type_id';
+
+  db.query(sql, userinfo, function (err, data) {
+    if (err) throw err;
+    return callback(data);
+  });
+}
+module.exports.resumeStudies =  (userinfo, callback) => {
+  sql = 'select distinct  a.document_id, c.type_name,b.date_created, a.user_id FROM document_movement as a  JOIN document as b on a.document_destination =? and read_status = 0 and b.type_id = 2  and a.document_id = b.document_id JOIN document_type as c ON b.type_id = c.type_id';
+
+  db.query(sql, userinfo, function (err, data) {
+    if (err) throw err;
+    return callback(data);
+  });
+}
+
+module.exports.receiveResponce =  (office_id, callback) => {
+  sql = 'select distinct  a.document_id, c.type_name,b.date_created, a.user_id FROM document_movement as a  JOIN document as b on a.resp_ofc =? and read_status = 0 and a.document_id = b.document_id JOIN document_type as c ON b.type_id = c.type_id';
+
+  db.query(sql, office_id, function (err, data) {
+    if (err) throw err;
+    return callback(data);
+  });
+}
+
+module.exports.cancelDocument = (cancelInfo, callback) => {
+
+  const cancel = {
     date_received: new Date(),
     date_dispatched: new Date(),
-    comments: approveInfo.coment,
-    document_destination: approveInfo.dest,
-    user_id: approveInfo.user_id,
+    comments:cancelInfo.coment,
+    document_destination: cancelInfo.dest,
+    user_id: cancelInfo.user_id,
     office_id: 1,
-    document_id: approveInfo.document_id,
+    document_id: cancelInfo.document_id,
   };
 
   var sql = "INSERT INTO document_movement SET ?";
-  db.query(sql, approve, function (err, data) {
+  db.query(sql, cancel, function (err, data) {
     if (err) throw err;
     console.log('document approved successifuly')
   });
-
 }
 
 module.exports.natification = ({ user_id }) => {
@@ -167,12 +214,12 @@ module.exports.trackDocument = ({document})=>{
 //getting success position from the database 
 module.exports.seccessor = (username)=>{
     return new Promise(async(resolve, reject)=>{
-      
+  
       try{
-         let sql = 'select successor_position from user_profile where registration_number = ?';
+         let sql = 'select distinct successor_position from user_profile where registration_number = ?';
          db.query(sql,username, (err, data)=>{
            if (err) throw err;
-           resolve(data)
+           resolve(data[0]['successor_position'])
          })
 
       } catch(err){
@@ -183,15 +230,14 @@ module.exports.seccessor = (username)=>{
 
 }
 
-module.exports.destiny = (destiny)=>{
-
+module.exports.destiny = (succ)=>{
  return new Promise(async(resolve, reject)=>{
       
       try{
          let sql = 'select registration_number from user_profile where position_id = ?';
-         db.query(sql,destiny, (err, data)=>{
+         db.query(sql,succ, (err, data)=>{
            if (err) throw err;
-           resolve(data)
+           resolve(data[1]['registration_number'])
          })
 
       } catch(err){
@@ -199,8 +245,104 @@ module.exports.destiny = (destiny)=>{
       }
 
     } )
+}
 
+module.exports.aproveButton = (aproveData)=>{
 
+// here data are inserted into document movement table after aproval
+  const approve = {
+    date_received: new Date(),
+    date_dispatched: new Date(),
+    comments: "",
+    document_destination: aproveData.destiny,
+    user_id: aproveData.senderNumber,
+    office_id: 1,
+    document_id: aproveData.document_id.document,
+  };
+
+  var sql = "INSERT INTO document_movement SET ?";
+  db.query(sql, approve, function (err, data) {
+    if (err) throw err;
+    console.log('document approved successifuly')
+  });
+
+  return new Promise(async(resolve,reject)=>{
+    let document_id = aproveData.document_id.document;
+     
+    try{
+      
+      let sql = 'UPDATE document_movement SET read_status = 1 WHERE document_id = ?';
+      await db.query(sql,document_id, function(err, data){
+        if(err) throw (err)
+        resolve(console.log('success'))
+      })
+    }catch(err){
+      reject(error)
+    }
+  });  
 
 }
 
+// inserting data when responding to student
+module.exports.respond = (info, callback)=>{
+
+
+  const docinfo = {
+    document_id: info.filee.filename,
+    date_created: new Date(),
+    type_id: info.docname,
+    status_id:1,
+    support1:null,
+    support2:null,
+  };
+
+  var sql = "INSERT INTO document SET ?";
+  db.query(sql, docinfo, function (err, data) {
+    if (err) {
+      throw err;
+      // callback(err, null)
+    } else {
+      callback(null, { status: true, message: "look fine." })
+    }
+  });
+
+
+  // inserting into document movement table .
+  const docMovementInfo = {
+    date_received: new Date(),
+    date_dispatched: new Date(),
+    comments: "",
+    document_destination:0,
+    user_id: info.Sender_no,
+    office_id: info.office,
+    document_id: info.filee.filename,
+    responded_to:info.student_responded,
+    resp_ofc:info.office,
+  };
+
+  var sql = "INSERT INTO document_movement SET ?";
+  db.query(sql, docMovementInfo, function (err, data) {
+    if (err) throw err;
+    console.log('document  responded successifuly')
+  });
+
+}
+
+
+
+module.exports.giveOfficeId = (userOffice)=>{
+  return new Promise(async(resolve, reject)=>{
+       
+       try{
+          let sql = 'select office_id from user_profile where user_id = ?';
+          db.query(sql,userOffice, (err, data)=>{
+            if (err) throw err;
+            resolve(data[0]['office_id'])
+          })
+ 
+       } catch(err){
+         reject(error)
+       }
+ 
+     } )
+ }

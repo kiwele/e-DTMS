@@ -20,7 +20,7 @@
 </head>
 
 <body class="hold-transition sidebar-mini layout-fixed">
-  <div class="wrapper">
+  <div class="wrapper" id="container">
 
     <!-- Preloader -->
     <div class="preloader flex-column justify-content-center align-items-center">
@@ -193,7 +193,8 @@
                       <tr>
                         <th>ID</th>
                         <th>Name</th>
-                        <th>Date created</th>
+                        <th>From</th>
+                        <th>Date received</th>
                         <th>Action</th>
 
 
@@ -210,26 +211,26 @@
                             <%=data.type_name%>
                           </td>
                           <td>
-                            <%=data.date_created%>
+                            <%=data.user_id%>
+                          </td>
+                          <td>
+                            <%=data.date_received%>
                           </td>
                           <td>
                             <div class="btn-group">
                               <a href="/aploads/<%= data.document_id%>" class="btn btn-sm btn-primary">Preview</a>
-                              <form action="/approve">
+                              <form action="/cancel">
                                 <input name="take" value="<%= data.document_id %>" style="display: none;">
+                                <input name="take" value="<%=data.user_id%>" style="display: none;">
                                 <button type="submit" class="btn btn-sm btn-primary" style="margin-left: 5px;">Cansel</button>
                               </form>
-                              <button type="submit" class="btn btn-sm btn-primary" style="margin-left: 5px;">approve</button>
+                              <button type="submit" class="btn btn-sm btn-primary" @click="aprove('<%= data.document_id %>')" style="margin-left: 5px;" >approve</button>
                             </div>
                           </td>
 
 
                         </tr>
                         <% }); } %>
-
-
-
-
                           </tfoot>
                   </table>
 
@@ -284,8 +285,32 @@
   <script src="/dist/js/adminlte.min.js"></script>
   <!-- AdminLTE for demo purposes -->
   <script src="/dist/js/demo.js"></script>
+  <script src="/vue.js"></script>
+  <script src="/axios.js"></script>
   <!-- Page specific script -->
   <script>
+    $(document).ready(function () {
+          let vm = new Vue({
+           el : "#container",
+           data :{
+             results:"",
+             document:"",
+           },
+
+           methods:{
+            aprove(document) {
+            axios.get(`/aprove/${document}`)
+              .then((res) => {
+                console.log(musa);
+              })
+              .catch(function (error) {
+                alert("Somethings went wrong.")
+              })
+          }
+           }
+
+        }) 
+      })
     $(function () {
       $("#example1").DataTable({
         "responsive": true, "lengthChange": false, "autoWidth": false,

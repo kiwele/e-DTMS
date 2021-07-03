@@ -20,7 +20,7 @@
 </head>
 
 <body class="hold-transition sidebar-mini layout-fixed">
-  <div class="wrapper" id="container">
+  <div class="wrapper">
 
     <!-- Preloader -->
     <div class="preloader flex-column justify-content-center align-items-center">
@@ -66,8 +66,8 @@
         </li>
 
 
-        <!-- Notifications Dropdown Menu -->
-        <li class="nav-item dropdown">
+         <!-- Notifications Dropdown Menu -->
+         <li class="nav-item dropdown">
           <a class="nav-link" data-toggle="dropdown" href="#">
             <i class="far fa-bell"></i>
             <span class="badge badge-warning navbar-badge">
@@ -81,14 +81,15 @@
             <% for(item in notifications.notifications){ %>
               <div class="dropdown-divider"></div>
               <a href="receive_document" class="dropdown-item">
-                <i class="fas fa-envelope mr-2"></i>
-                <%= notifications.notifications[item]['total'] %>
-                  <%= notifications.notifications[item]['type_name'] %>
+                <i class="fas fa-envelope mr-2"></i> <%= notifications.notifications[item]['total'] %> <%= notifications.notifications[item]['type_name'] %>
               </a>
               <% } %>
-
+               
           </div>
         </li>
+
+
+    
 
         <li class="nav-item">
           <!-- Sidebar user panel (optional) -->
@@ -102,6 +103,8 @@
           </div>
 
         </li>
+
+
       </ul>
     </nav>
     <!-- /.navbar -->
@@ -109,8 +112,9 @@
     <!-- Main Sidebar Container -->
     <aside class="main-sidebar sidebar-dark-primary elevation-4">
       <!-- Brand Logo -->
-      <a href="#" class="brand-link">
-        <img src="/dist/img/AdminLTELogo.png" class="brand-image img-circle elevation-3" style="opacity: .8">
+      <a href="index3.html" class="brand-link">
+        <img src="/dist/img/AdminLTELogo.png" alt="AdminLTE Logo" class="brand-image img-circle elevation-3"
+          style="opacity: .8">
         <span class="brand-text font-weight-light">e-DTMS</span>
       </a>
 
@@ -136,7 +140,7 @@
             <!-- Add icons to the links using the .nav-icon class
                with font-awesome or any other icon font library -->
             <li class="nav-item menu-open">
-              <a href="index" class="nav-link ">
+              <a href="index2" class="nav-link">
                 <i class="nav-icon fas fa-tachometer-alt"></i>
                 <p>
                   Home
@@ -146,24 +150,59 @@
 
             </li>
             <li class="nav-item">
-              <a href="create_document" class="nav-link">
-                <i class="nav-icon fas fa-copy"></i>
-                <p>
-                  Create document
-                </p>
-              </a>
-            </li>
+                <a href="feedback" class="nav-link">
+                  <i class="nav-icon fas fa-copy"></i>
+                  <p>
+                    Send response
+                  </p>
+                </a>
+              </li>
             <li class="nav-item">
-              <a href="view_documents" class="nav-link active">
+              <a href="staff_view_document" class="nav-link">
                 <i class="nav-icon fas fa-copy"></i>
                 <p>
                   View document
 
-
                 </p>
               </a>
             </li>
 
+            <li class="nav-item">
+                <a href="special_test" class="nav-link">
+                  <i class="nav-icon fas fa-copy"></i>
+                  <p>
+                    <span class="badge badge-warning navbar-badge">
+                      1 
+                    </span>
+                    Special test
+                  </p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="special_exam" class="nav-link">
+                  <i class="nav-icon fas fa-copy"></i>
+                  <p>
+                    Special exams
+                  </p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="postpone_studies" class="nav-link">
+                  <i class="nav-icon fas fa-copy"></i>
+                  <p>
+                    Postpone studies
+                  </p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="resume_studies" class="nav-link active">
+                  <i class="nav-icon fas fa-copy"></i>
+                  <p>
+                    Resume studies
+                  </p>
+                </a>
+              </li>
+  
 
           </ul>
         </nav>
@@ -180,20 +219,11 @@
       <section class="content">
         <div class="container-fluid">
           <div class="row">
-
-
-
-
-
-
-
-            <div class="col-md-12">
+            <div class="col-12">
 
               <div class="card">
                 <div class="card-header">
-                  <h3 class="card-title">List of documents you created <label style="justify-content: center;">
-                      <%=username%>
-                    </label> </h3>
+                  <h3 class="card-title">List of documents you created </h3>
                 </div>
                 <!-- /.card-header -->
                 <div class="card-body">
@@ -203,7 +233,6 @@
                         <th>ID</th>
                         <th>Name</th>
                         <th>Date created</th>
-                        <th>Status</th>
                         <th>Action</th>
 
                       </tr>
@@ -222,26 +251,23 @@
                             <%=data.date_created%>
                           </td>
                           <td>
-                            <%=data.status_name%>
+                            <div class="btn-group">
+                              <a href="/aploads/<%= data.document_id%>" class="btn btn-sm btn-primary">Preview</a>
+                              <form action="/approve">
+                                <input name="take" value="<%= data.document_id %>" style="display: none;">
+                                <button type="submit" class="btn btn-sm btn-primary" style="margin-left: 5px;">Cansel</button>
+                              </form>
+                              <button type="submit" class="btn btn-sm btn-primary" style="margin-left: 5px;">approve</button>
+                            </div>
                           </td>
-                          <td><button class="primary"><a href="/aploads/<%= data.document_id%>">view</a></button>
-                            <!-- Button trigger modal-->
-                            <button type="button" @click="track('<%= data.document_id %>')"
-                              class="btn btn-sm btn-primary font-weight-bolder" data-toggle="modal"
-                              data-target="#track-document-modal">
-                              Track
-                            </button>
 
-                          </td>
 
                         </tr>
                         <% }); } %>
 
-
-
-
                           </tfoot>
                   </table>
+
                 </div>
                 <!-- /.card-body -->
               </div>
@@ -252,52 +278,6 @@
           <!-- /.row -->
         </div>
         <!-- /.container-fluid -->
-
-        <!-- begin::of Track document Modal-->
-        <div class="modal fade" id="track-document-modal" tabindex="-1" role="dialog" aria-labelledby="staticBackdrop"
-          aria-hidden="true">
-          <div class="modal-dialog modal-dialog-scrollable" role="document">
-            <div class="modal-content">
-              <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Track document movement here</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                  <i aria-hidden="true" class="ki ki-close"></i>
-                </button>
-              </div>
-              <div class="modal-body" style="height: 300px;">
-
-                <form class="form" id="add-product-form" name="add-product-form">
-                  <div class="card-body">
-                    <div v-for="item in results">
-                      <div class="form-group">
-                        <label>From: {{ item.user_id }}</label>
-                      </div>
-                      <div class="form-group">
-                        <label>To: {{ item.document_destination }}</label>
-                      </div>
-
-                      <div class="form-group">
-                        <label>Date: {{ item.date_received }}</label>
-                      </div>
-
-                    </div>
-                </form>
-
-              </div>
-              <div class="modal-footer">
-                <button type="button" class="btn btn-light-primary font-weight-bold" data-dismiss="modal">Close
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!--end::of track document modal-->
-
-
-
-
-
       </section>
       <!-- /.content -->
     </div>
@@ -339,46 +319,14 @@
   <script src="/dist/js/adminlte.min.js"></script>
   <!-- AdminLTE for demo purposes -->
   <script src="/dist/js/demo.js"></script>
-  <script src="/vue.js"></script>
-  <script src="/axios.js"></script>
-
   <!-- Page specific script -->
   <script>
-    $(document).ready(function () {
-      let vm = new Vue({
-        el: "#container",
-        data: {
-          results: "",
-          document: "",
-        },
-        methods: {
-          track(document) {
-            axios.get(`/track/${document}`)
-              .then(({ data }) => {
-                this.results = data;
-              })
-              .catch(function (error) {
-                alert("Somethings went wrong.")
-              })
-          }
-        }
-      })
-    })
-
     $(function () {
       $("#example1").DataTable({
         "responsive": true, "lengthChange": false, "autoWidth": false,
         "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
       }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
-      $('#example2').DataTable({
-        "paging": true,
-        "lengthChange": false,
-        "searching": false,
-        "ordering": true,
-        "info": true,
-        "autoWidth": false,
-        "responsive": true,
-      });
+
     });
   </script>
 </body>
