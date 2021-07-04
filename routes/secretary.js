@@ -144,5 +144,72 @@ router.get('/receive_response', async (req, res) => {
     });
 })
 
+// pushing responce to either student or office
+router.get('/push_response', async (req, res) => {
+    let { username } = jwt.verify(req.cookies.file, process.env.SECRET)
+    const notifications = await staffController.natification({ user_id: username })
+
+
+    let data = auth.details(req);
+    student = req.query.student;
+    document_id = req.query.document_id;
+    
+    const succ =  await userModels.seccessor(student)     
+    let destiny = await userModels.destiny(succ);
+    
+    // performend when final sender is not supposed to send to student
+    if(destiny != data.username){
+       
+        let { username } = jwt.verify(req.cookies.file, process.env.SECRET)
+        const notifications = await staffController.natification({ user_id: username })
+        res.render('mvr_office', { data: student, data1: document_id, message: "", notifications });
+        
+        
+    } else {
+        // send direct to student
+        let { username } = jwt.verify(req.cookies.file, process.env.SECRET)
+        const notifications = await staffController.natification({ user_id: username })
+        res.render('mvr_student', { data: student,data1: document_id, message: "", notifications });
+    } 
+})
+
+
+router.post('/rsp_office', async (req, res)=>{
+   
+    let data = auth.details(req);
+    
+    office = req.body.office_id;
+    student_responded = req.body.student_no;
+    document_id = req.body.document_id;
+    Sender_no = data.username;
+     
+   info = {office, student_responded,document_id,Sender_no};
+   userModels.respondoffice(info); 
+   let { username } = jwt.verify(req.cookies.file, process.env.SECRET)
+        const notifications = await staffController.natification({ user_id: username })
+   res.render('mvr_office', { data: "",data1: "", message: "Congratulation document responded successifull", notifications });
+
+
+})
+
+router.post('/rsp_student', async (req, res)=>{
+   
+    let user_id = auth.details(req)
+
+    var respondInfo = {
+        sender: user_id.username,
+        document_id: req.body.document_id,
+        user_id: user_id.username,
+        dest: req.body.destin,
+        coment: "",
+    }
+    userModels.cancelDocument(respondInfo)
+    let { username } = jwt.verify(req.cookies.file, process.env.SECRET)
+        const notifications = await staffController.natification({ user_id: username })
+        res.render('mvr_student', { data: "",data1:"", message: "Congratulations responce has been sent" ,notifications});
+
+
+})
+
 
 module.exports = router;

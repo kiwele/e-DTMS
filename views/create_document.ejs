@@ -87,7 +87,7 @@
     </span>
     <% for(item in notifications.notifications){ %>
       <div class="dropdown-divider"></div>
-      <a href="receive_document" class="dropdown-item">
+      <a href="student_docreceive" class="dropdown-item">
         <i class="fas fa-envelope mr-2"></i> <%= notifications.notifications[item]['total'] %> <%= notifications.notifications[item]['type_name'] %>
       </a>
       <% } %>
@@ -142,17 +142,17 @@
                with font-awesome or any other icon font library -->
           <li class="nav-item menu-open">
             <a href="index" class="nav-link ">
-              <i class="nav-icon fas fa-tachometer-alt"></i>
+              <i class="nav-icon fas fa-home"></i>
               <p>
                 Home
-                <i class="right fas fa-angle-left"></i>
+              
               </p>
             </a>
            
           </li>
           <li class="nav-item">
-            <a href="create_document" class="nav-link active">
-              <i class="nav-icon fas fa-copy"></i>
+            <a href="create_document" class="nav-link active" style="background-color: #0864AF;">
+              <i class="nav-icon fas fa-envelope"></i>
               <p>
                 Send request
               </p>
@@ -160,15 +160,22 @@
           </li>
           <li class="nav-item">
             <a href="view_documents" class="nav-link">
-              <i class="nav-icon fas fa-copy"></i>
+              <i class="nav-icon fas fa-envelope"></i>
               <p>
                 View document
                 
               </p>
             </a>
           </li>
-          
-        
+          <li class="nav-item">
+            <a href="#" class="nav-link">
+              <i></i>
+              <p>
+                Logout                
+              </p>
+            </a>
+          </li>
+      
         </ul>
       </nav>
       <!-- /.sidebar-menu -->

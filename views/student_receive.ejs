@@ -20,7 +20,7 @@
 </head>
 
 <body class="hold-transition sidebar-mini layout-fixed">
-  <div class="wrapper">
+  <div class="wrapper" id="container">
 
     <!-- Preloader -->
     <div class="preloader flex-column justify-content-center align-items-center">
@@ -66,8 +66,9 @@
         </li>
 
 
-         <!-- Notifications Dropdown Menu -->
-         <li class="nav-item dropdown">
+    
+        <!-- Notifications Dropdown Menu -->
+        <li class="nav-item dropdown">
           <a class="nav-link" data-toggle="dropdown" href="#">
             <i class="far fa-bell"></i>
             <span class="badge badge-warning navbar-badge">
@@ -80,16 +81,13 @@
             </span>
             <% for(item in notifications.notifications){ %>
               <div class="dropdown-divider"></div>
-              <a href="receive_document" class="dropdown-item">
+              <a href="student_docreceive" class="dropdown-item">
                 <i class="fas fa-envelope mr-2"></i> <%= notifications.notifications[item]['total'] %> <%= notifications.notifications[item]['type_name'] %>
               </a>
               <% } %>
                
           </div>
         </li>
-
-
-    
 
         <li class="nav-item">
           <!-- Sidebar user panel (optional) -->
@@ -140,8 +138,8 @@
             <!-- Add icons to the links using the .nav-icon class
                with font-awesome or any other icon font library -->
             <li class="nav-item menu-open">
-              <a href="index2" class="nav-link">
-                <i class="nav-icon fas fa-tachometer-alt"></i>
+              <a href="index" class="nav-link">
+                <i class="nav-icon fas fa-home"></i>
                 <p>
                   Home
                   <i class="right fas fa-angle-left"></i>
@@ -150,59 +148,22 @@
 
             </li>
             <li class="nav-item">
-                <a href="feedback" class="nav-link">
-                  <i class="nav-icon fas fa-copy"></i>
-                  <p>
-                    Send response
-                  </p>
-                </a>
-              </li>
-            <li class="nav-item">
-              <a href="staff_view_document" class="nav-link">
-                <i class="nav-icon fas fa-copy"></i>
+              <a href="create_document" class="nav-link">
+                <i class="nav-icon fas fa-envelope"></i>
                 <p>
-                  View document
+                  Send request
+                </p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="view_documents" class="nav-link">
+                <i class="nav-icon fas fa-envelope"></i>
+                <p>
+                  View documents
 
                 </p>
               </a>
             </li>
-
-            <li class="nav-item">
-                <a href="special_test" class="nav-link">
-                  <i class="nav-icon fas fa-copy"></i>
-                  <p>
-                    <span class="badge badge-warning navbar-badge">
-                      1 
-                    </span>
-                    Special test
-                  </p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="special_exam" class="nav-link active" style="background-color: #0864AF;">
-                  <i class="nav-icon fas fa-copy"></i>
-                  <p>
-                    Special exams
-                  </p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="postpone_studies" class="nav-link">
-                  <i class="nav-icon fas fa-copy"></i>
-                  <p>
-                    Postpone studies
-                  </p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="resume_studies" class="nav-link">
-                  <i class="nav-icon fas fa-copy"></i>
-                  <p>
-                    Resume studies
-                  </p>
-                </a>
-              </li>
-  
 
           </ul>
         </nav>
@@ -232,8 +193,10 @@
                       <tr>
                         <th>ID</th>
                         <th>Name</th>
-                        <th>Date created</th>
+                        <th>From</th>
+                        <th>Date received</th>
                         <th>Action</th>
+
 
                       </tr>
                     </thead>
@@ -248,23 +211,21 @@
                             <%=data.type_name%>
                           </td>
                           <td>
-                            <%=data.date_created%>
+                            <%=data.user_id%>
+                          </td>
+                          <td>
+                            <%=data.date_received%>
                           </td>
                           <td>
                             <div class="btn-group">
                               <a href="/aploads/<%= data.document_id%>" class="btn btn-sm btn-primary">Preview</a>
-                              <form action="/approve">
-                                <input name="take" value="<%= data.document_id %>" style="display: none;">
-                                <button type="submit" class="btn btn-sm btn-primary" style="margin-left: 5px;">Cansel</button>
-                              </form>
-                              <button type="submit" class="btn btn-sm btn-primary" style="margin-left: 5px;">approve</button>
+                              
                             </div>
                           </td>
 
 
                         </tr>
                         <% }); } %>
-
                           </tfoot>
                   </table>
 
@@ -319,8 +280,32 @@
   <script src="/dist/js/adminlte.min.js"></script>
   <!-- AdminLTE for demo purposes -->
   <script src="/dist/js/demo.js"></script>
+  <script src="/vue.js"></script>
+  <script src="/axios.js"></script>
   <!-- Page specific script -->
   <script>
+    $(document).ready(function () {
+          let vm = new Vue({
+           el : "#container",
+           data :{
+             results:"",
+             document:"",
+           },
+
+           methods:{
+            aprove(document) {
+            axios.get(`/aprove/${document}`)
+              .then((res) => {
+                console.log(musa);
+              })
+              .catch(function (error) {
+                alert("Somethings went wrong.")
+              })
+          }
+           }
+
+        }) 
+      })
     $(function () {
       $("#example1").DataTable({
         "responsive": true, "lengthChange": false, "autoWidth": false,

@@ -7,5 +7,6 @@ module.exports = [
      viewdoc = require('./view_documents'),
      receivedoc = require('./secretary'),
      document = require('./document'),
+     student =require('./student'),
      
 ]

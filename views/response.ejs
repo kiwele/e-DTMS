@@ -139,7 +139,7 @@
                            with font-awesome or any other icon font library -->
                         <li class="nav-item menu-open">
                           <a href="index2" class="nav-link">
-                            <i class="nav-icon fas fa-tachometer-alt"></i>
+                            <i class="nav-icon fas fa-home"></i>
                             <p>
                               Home
                               <i class="right fas fa-angle-left"></i>
@@ -149,7 +149,7 @@
                         </li>
                         <li class="nav-item">
                           <a href="feedback" class="nav-link">
-                            <i class="nav-icon fas fa-copy"></i>
+                            <i class="nav-icon fas fa-envelope"></i>
                             <p>
                               Send response
                             </p>
@@ -157,10 +157,53 @@
                         </li>
                         <li class="nav-item">
                           <a href="staff_view_document" class="nav-link">
-                            <i class="nav-icon fas fa-copy"></i>
+                            <i class="nav-icon fas fa-envelope"></i>
                             <p>
                               View document
             
+                            </p>
+                          </a>
+                        </li>
+                        <li class="nav-item">
+                          <a href="special_test" class="nav-link">
+                            <i class="nav-icon fas fa-envelope"></i>
+                            <p>
+                              <span class="badge badge-warning navbar-badge">
+                                1 
+                              </span>
+                              Special test
+                            </p>
+                          </a>
+                        </li>
+                        <li class="nav-item">
+                          <a href="special_exam" class="nav-link">
+                            <i class="nav-icon fas fa-envelope"></i>
+                            <p>
+                              Special exams
+                            </p>
+                          </a>
+                        </li>
+                        <li class="nav-item">
+                          <a href="postpone_studies" class="nav-link">
+                            <i class="nav-icon fas fa-envelope"></i>
+                            <p>
+                              Postpone studies
+                            </p>
+                          </a>
+                        </li>
+                        <li class="nav-item">
+                          <a href="resume_studies" class="nav-link">
+                            <i class="nav-icon fas fa-envelope"></i>
+                            <p>
+                              Resume studies
+                            </p>
+                          </a>
+                        </li>
+                        <li class="nav-item">
+                          <a href="receive_response" class="nav-link">
+                            <i class="nav-icon fas fa-envelope"></i>
+                            <p>
+                              feedback
                             </p>
                           </a>
                         </li>
@@ -210,8 +253,10 @@
                                       <td>
                                         <%=data.type_name%>
                                       </td>
-                                      <td></td>
-                                      <td></td>
+                                      <td><%=data.user_id%></td>
+                                      <td>
+                                        <%=data.responded_to%>
+                                      </td>
                                       <td></td>
                                       <td>
                                         <%=data.date_received%>
@@ -224,7 +269,11 @@
                                             <input name="take" value="<%=data.user_id%>" style="display: none;">
                                             <button type="submit" class="btn btn-sm btn-primary" style="margin-left: 5px;">Cansel</button>
                                           </form>
-                                          <button type="submit" class="btn btn-sm btn-primary" @click="aprove('<%= data.document_id %>')" style="margin-left: 5px;" >approve</button>
+                                          <form action="/push_response">
+                                            <input name="document_id" value="<%= data.document_id %>" style="display: none;">
+                                            <input name="student" value="<%=data.responded_to%>" style="display: none;">
+                                            <button type="submit" class="btn btn-sm btn-primary" style="margin-left: 5px;">Send</button>
+                                          </form>
                                         </div>
                                       </td>
             

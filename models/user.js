@@ -147,10 +147,11 @@ module.exports.resumeStudies =  (userinfo, callback) => {
 }
 
 module.exports.receiveResponce =  (office_id, callback) => {
-  sql = 'select distinct  a.document_id, c.type_name,b.date_created, a.user_id FROM document_movement as a  JOIN document as b on a.resp_ofc =? and read_status = 0 and a.document_id = b.document_id JOIN document_type as c ON b.type_id = c.type_id';
+  sql = 'select distinct  a.document_id, c.type_name,b.date_created, a.user_id,a.responded_to FROM document_movement as a  JOIN document as b on a.resp_ofc =? and read_status = 0 and a.document_id = b.document_id JOIN document_type as c ON b.type_id = c.type_id';
 
   db.query(sql, office_id, function (err, data) {
     if (err) throw err;
+    
     return callback(data);
   });
 }
@@ -216,7 +217,7 @@ module.exports.seccessor = (username)=>{
     return new Promise(async(resolve, reject)=>{
   
       try{
-         let sql = 'select distinct successor_position from user_profile where registration_number = ?';
+         let sql ='select distinct successor_position from user_profile where registration_number = ?';
          db.query(sql,username, (err, data)=>{
            if (err) throw err;
            resolve(data[0]['successor_position'])
@@ -346,3 +347,47 @@ module.exports.giveOfficeId = (userOffice)=>{
  
      } )
  }
+
+//  module.exports.giveDocType =(docname)=>{
+
+//   return new Promise(async(resolve, reject)=>{
+       
+//     try{
+//        let sql = 'select type_id from document_type where type_name = ?';
+//        db.query(sql,userOffice, (err, data)=>{
+//          if (err) throw err;
+//          resolve(data[0]['type_id'])
+//        })
+
+//     } catch(err){
+//       reject(error)
+//     }
+
+//   } )
+
+//  }
+
+
+ // inserting data when responding to student through another office
+module.exports.respondoffice = (info, callback)=>{
+
+  // inserting into document movement table .
+  const docMovementInfo = {
+    date_received: new Date(),
+    date_dispatched: new Date(),
+    comments: "",
+    document_destination:0,
+    user_id: info.Sender_no,
+    office_id: info.office,
+    document_id: info.document_id,
+    responded_to:info.student_responded,
+    resp_ofc:info.office,
+  };
+
+  var sql = "INSERT INTO document_movement SET ?";
+  db.query(sql, docMovementInfo, function (err, data) {
+    if (err) throw err;
+    console.log('document  responded  successifuly')
+  });
+
+}
