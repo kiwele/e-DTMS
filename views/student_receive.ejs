@@ -164,6 +164,13 @@
                 </p>
               </a>
             </li>
+            <li class="nav-item">
+              <a href="/" class="nav-link">
+                <p>
+                  Logout                
+                </p>
+              </a>
+            </li>
 
           </ul>
         </nav>
@@ -184,7 +191,7 @@
 
               <div class="card">
                 <div class="card-header">
-                  <h3 class="card-title">List of documents you created </h3>
+                  <h3 class="card-title">Response of your requests </h3>
                 </div>
                 <!-- /.card-header -->
                 <div class="card-body">
@@ -194,10 +201,8 @@
                         <th>ID</th>
                         <th>Name</th>
                         <th>From</th>
-                        <th>Date received</th>
+                        <th>Comments</th>
                         <th>Action</th>
-
-
                       </tr>
                     </thead>
                     <tbody>
@@ -214,7 +219,7 @@
                             <%=data.user_id%>
                           </td>
                           <td>
-                            <%=data.date_received%>
+                            <%=data.comments%>
                           </td>
                           <td>
                             <div class="btn-group">

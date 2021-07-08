@@ -61,7 +61,7 @@ router.post('/cancel', async (req, res, next) => {
     userModels.cancelDocument(cancelInfo)
     let { username } = jwt.verify(req.cookies.file, process.env.SECRET)
         const notifications = await staffController.natification({ user_id: username })
-        res.render('cancel', { data: "",data1:"", message: "Congratulations document has been approved" ,notifications});
+        res.render('cancel', { data: "",data1:"", message: "Congratulations document has been cancelled" ,notifications});
 })
 
 
@@ -78,11 +78,17 @@ router.get('/aprove/:document', async (req, res) => {
     let user_id = auth.details(req);
     let senderNumber = user_id.username;
     let  document_id =  req.params;
-    const succ =  await userModels.seccessor(senderNumber)     
-    let destiny = await userModels.destiny(succ);
-    const aproveData = {senderNumber , document_id, destiny}
 
-     await userModels.aproveButton(aproveData);   
+    const succ =  await userModels.seccessor(senderNumber)  
+      
+    let destiny = await userModels.destiny(succ);
+
+    
+
+ await userModels.updateStatus(document_id)
+     const aproveData = {senderNumber , document_id, destiny}
+
+      await userModels.aproveButton(aproveData);   
   });
 
 

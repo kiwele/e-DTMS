@@ -13,17 +13,27 @@ module.exports.signup = function (data) {
             lastname: data.firstname,
             regnumber: data.regnumber,
             yearofstudy: data.yearofstudy,
+            program:data.program,
+            position:data.position,
+            role:data.role,
+            office:data.office,
+            sucssessor:data.sucssessor,
             password: hash,
         })
     })
 
 }
 
-module.exports.userLogin = function (req, res) {
+
+module.exports.userLogin = async (req, res) =>{
+    
     var credentials = {
         user_id: req.body.user_id,
         password: req.body.password,
+        
     }
+    const role = await userModels.giverRole(credentials.user_id)
+    
 
     let bool = (req.body.user_id != '' || req.body.password != '') ? true : false
 
@@ -45,7 +55,8 @@ module.exports.userLogin = function (req, res) {
                                 secure: false,
                                 maxAge: new Date().getTime() + after,
                             })
-                            if (credentials.user_id != 10 && credentials.user_id != 20 && credentials.user_id != 100) {
+                            
+                            if (role != 1) {
                                 res.redirect('/index2')
                             } else {
 

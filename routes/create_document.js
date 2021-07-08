@@ -41,9 +41,10 @@ router.post('/create_document',auth.verify, multer({
     const succ =  await userModels.seccessor(username);
      
     let destiny = await userModels.destiny(succ);
+    console.log(succ)
      
-   info = { docname, leter, username, destiny,supot1,supot2 };
-   userModels.appload(info, function (error, data) {});
+  //  info = { docname, leter, username, destiny,supot1,supot2 };
+  //  userModels.appload(info, function (error, data) {});
    
 
 //getting back to document creation page    
@@ -54,14 +55,14 @@ router.post('/create_document',auth.verify, multer({
 
       res.redirect('/staff_create_document')
       res.render("staff_create_document", 
-      { message: "Congratulations!! document sumitted successifully.", notifications });
+      { message: "Congratulations!! document submitted successifully.", notifications });
   } else{
     
     let { username } = jwt.verify(req.cookies.file, process.env.SECRET)
     const notifications = await staffController.natification({ user_id: username })
 
     res.render("create_document", 
-    { message: "Congratulations!! document sumitted successifully.", 
+    { message: "Congratulations!! document submitted successifully.", 
     username:data.username , notifications  });  
   }
   

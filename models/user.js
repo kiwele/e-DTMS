@@ -17,25 +17,56 @@ module.exports.signup = function (data) {
   });
 
   // insertion of user profile data
-  const profile = {
-    registration_number: data.regnumber,
-    first_name: data.firstname,
-    middle_name: data.middlename,
-    last_name: data.lastname,
-    year_of_study: data.yearofstudy,
-    user_id: data.regnumber,
-    course_id: null,
-    position_id: 4,
-    role_id: 3,
-    office_id:2,
-    successor_position:5,
-  };
+ 
+    if(data.office == 0){
+
+      const profile = {
+        registration_number: data.regnumber,
+        first_name: data.firstname,
+        middle_name: data.middlename,
+        last_name: data.lastname,
+        year_of_study: data.yearofstudy,
+        user_id: data.regnumber,
+        course_id: data.program,
+        position_id: data.position,
+        role_id: data.role,
+        office_id:"0",
+        successor_position:data.sucssessor,
+      };
+
+      var sql = "INSERT INTO user_profile SET ?";
+      db.query(sql, profile, function (err, data) {
+        if (err) throw err;
+        console.log("1 record added in user profile");
+      });
+
+    }  else{
+
+
+      const profile = {
+        registration_number: data.regnumber,
+        first_name: data.firstname,
+        middle_name: data.middlename,
+        last_name: data.lastname,
+        year_of_study: data.yearofstudy,
+        user_id: data.regnumber,
+        course_id: null,
+        position_id: data.position,
+        role_id: data.role,
+        office_id:data.office,
+        successor_position:data.sucssessor,
+      };
+
 
   var sql = "INSERT INTO user_profile SET ?";
   db.query(sql, profile, function (err, data) {
     if (err) throw err;
     console.log("1 record added in user profile");
   });
+
+
+    }
+
 }
 
 // fetching login data from the given id
@@ -103,7 +134,7 @@ module.exports.viewDocument = (userinfo, callback) => {
 
 // receive all documents
 module.exports.receiveDocument =  (userinfo, callback) => {
-  sql = 'select distinct  a.document_id, c.type_name,b.date_created, a.user_id FROM document_movement as a  JOIN document as b on a.document_destination =? and read_status = 0 and a.document_id = b.document_id JOIN document_type as c ON b.type_id = c.type_id';
+  sql = 'select distinct a.comments,a.document_id, c.type_name,b.date_created, a.user_id FROM document_movement as a  JOIN document as b on a.document_destination =? and read_status = 0 and a.document_id = b.document_id JOIN document_type as c ON b.type_id = c.type_id';
 
   db.query(sql, userinfo, function (err, data) {
     if (err) throw err;
@@ -164,7 +195,7 @@ module.exports.cancelDocument = (cancelInfo, callback) => {
     comments:cancelInfo.coment,
     document_destination: cancelInfo.dest,
     user_id: cancelInfo.user_id,
-    office_id: 1,
+    office_id: 1, 
     document_id: cancelInfo.document_id,
   };
 
@@ -238,7 +269,7 @@ module.exports.destiny = (succ)=>{
          let sql = 'select registration_number from user_profile where position_id = ?';
          db.query(sql,succ, (err, data)=>{
            if (err) throw err;
-           resolve(data[1]['registration_number'])
+           resolve(data[0]['registration_number'])
          })
 
       } catch(err){
@@ -246,6 +277,30 @@ module.exports.destiny = (succ)=>{
       }
 
     } )
+}
+
+module.exports.updateStatus = (document_id)=>{
+
+  let doc_id = document_id.document;
+
+  return new Promise(async(resolve,reject)=>{
+    
+     
+    try{
+      
+      let sql = 'UPDATE document_movement SET read_status = 1 WHERE document_id = ?';
+      await db.query(sql,doc_id, function(err, data){
+        if(err) throw (err)
+        resolve(console.log('success'))
+      })
+    }catch(err){
+      reject(error)
+    }
+  }); 
+
+
+
+
 }
 
 module.exports.aproveButton = (aproveData)=>{
@@ -267,20 +322,7 @@ module.exports.aproveButton = (aproveData)=>{
     console.log('document approved successifuly')
   });
 
-  return new Promise(async(resolve,reject)=>{
-    let document_id = aproveData.document_id.document;
-     
-    try{
-      
-      let sql = 'UPDATE document_movement SET read_status = 1 WHERE document_id = ?';
-      await db.query(sql,document_id, function(err, data){
-        if(err) throw (err)
-        resolve(console.log('success'))
-      })
-    }catch(err){
-      reject(error)
-    }
-  });  
+   
 
 }
 
@@ -391,3 +433,20 @@ module.exports.respondoffice = (info, callback)=>{
   });
 
 }
+
+module.exports.giverRole =   (userID)=>{
+  return new Promise(async(resolve, reject)=>{
+       
+       try{
+          let sql = 'select role_id from user_profile where user_id = ?';
+          db.query(sql,userID, (err, data)=>{
+            if (err) throw err;
+            resolve(data[0]['role_id'])
+          })
+ 
+       } catch(err){
+         reject(error)
+       }
+ 
+     } )
+ }
