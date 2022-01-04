@@ -39,7 +39,7 @@ router.get('/receive_document', async (req, res) => {
         });
     })
 
-// geting approve page
+// geting cancel  page
 router.get('/cancel', async (req, res) => {
     
     let { username } = jwt.verify(req.cookies.file, process.env.SECRET)
@@ -47,7 +47,7 @@ router.get('/cancel', async (req, res) => {
     res.render('cancel', { data: req.query.take[0],data1: req.query.take[1], message: "", notifications });
 })
 
-// approving the documents
+// caceling the documents
 router.post('/cancel', async (req, res, next) => {
 
     let user_id = auth.details(req)
@@ -88,7 +88,9 @@ router.get('/aprove/:document', async (req, res) => {
  await userModels.updateStatus(document_id)
      const aproveData = {senderNumber , document_id, destiny}
 
-      await userModels.aproveButton(aproveData);   
+      await userModels.aproveButton(aproveData); 
+      
+      
   });
 
 

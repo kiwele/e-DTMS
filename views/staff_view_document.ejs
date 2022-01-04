@@ -162,9 +162,7 @@
             <a href="special_test" class="nav-link">
               <i class="nav-icon fas fa-copy"></i>
               <p>
-                <span class="badge badge-warning navbar-badge">
-                  1 
-                </span>
+               
                 Special test
               </p>
             </a>
@@ -263,6 +261,7 @@
                           <%=data.status_name%>
                         </td>
                         <td>
+                          <button class="primary"><a href="/aploads/<%= data.document_id%>">view</a></button>
                           <!-- Button trigger modal-->
                           <button type="button" @click="track('<%= data.document_id %>')"
                             class="btn btn-sm btn-primary font-weight-bolder" data-toggle="modal"

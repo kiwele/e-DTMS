@@ -223,8 +223,19 @@
                           </td>
                           <td>
                             <div class="btn-group">
-                              <a href="/aploads/<%= data.document_id%>" class="btn btn-sm btn-primary">Preview</a>
-                              
+
+
+                              <!-- <a href="/aploads/<%= data.document_id%>" class="btn btn-sm btn-primary">Preview</a> -->
+
+                              <!-- <button type="button" @click="track('<%= data.document_id %>')">
+                                <a href="/aploads/<%= data.document_id%>" class="btn btn-sm btn-primary">Preview</a>
+                              </button>
+                               -->
+
+                               <button type="button" @click="viewDoc('<%= data.document_id %>')">
+                                <a href="/aploads/<%= data.document_id%>">Preview</a>
+                                
+                              </button>
                             </div>
                           </td>
 
@@ -306,7 +317,16 @@
               .catch(function (error) {
                 alert("Somethings went wrong.")
               })
-          }
+          },
+            viewDoc(document) {
+            axios.get(`/viewDoc/${document}`)
+              .then(({ data }) => {
+                this.results = data;
+              })
+              .catch(function (error) {
+                alert("Somethings went wrong.")
+              })
+          },
            }
 
         }) 

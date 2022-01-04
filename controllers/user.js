@@ -52,8 +52,9 @@ module.exports.userLogin = async (req, res) =>{
                             let after = 3600000;
                             res.cookie('file', token, {
                                 httpOnly: true,
-                                secure: false,
-                                maxAge: new Date().getTime() + after,
+                                secure: true,
+                                 maxAge: after,
+                                 // maxAge: new Date().getTime() + after,
                             })
                             
                             if (role != 1) {
@@ -83,6 +84,18 @@ module.exports.trackDocument = function (document_id) {
     return new Promise(async (reject, resolve) => {
         try {
             const result = await userModels.trackDocument(document_id);
+            resolve(result)
+        }
+        catch (error) {
+            reject(error)
+        }
+    })
+}
+
+module.exports.updateDocument = function (document_id) {
+    return new Promise(async (reject, resolve) => {
+        try {
+            const result = await userModels.updateDocument(document_id);
             resolve(result)
         }
         catch (error) {

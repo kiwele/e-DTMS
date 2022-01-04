@@ -8,5 +8,6 @@ module.exports = [
      receivedoc = require('./secretary'),
      document = require('./document'),
      student =require('./student'),
+     configuration = require('./configuration')
      
 ]

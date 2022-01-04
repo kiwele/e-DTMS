@@ -2,6 +2,9 @@ var express = require('express');
 var router = express.Router();
 var jwt = require('jsonwebtoken')
 var auth = require('../utils/auth')
+
+var jwt = require('jsonwebtoken')
+var auth = require('../utils/auth')
 const staffController = require('../controllers/staff')
 
 /* GET home page. */
@@ -12,5 +15,13 @@ router.get('/index', auth.verify, async (req, res) => {
   const notifications = await staffController.natification({ user_id: username })
   res.render('index', { username: data.username , notifications});
 });
+
+router.get('/logout', function (req, res) {
+  res.cookie('file', "", {
+     maxAge: 0,
+  })
+ 
+  res.redirect('/')
+})
 
 module.exports = router;

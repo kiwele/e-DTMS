@@ -227,7 +227,12 @@
                           <td>
                             <%=data.status_name%>
                           </td>
+
+                          <td>
                           <td><button class="primary"><a href="/aploads/<%= data.document_id%>">view</a></button>
+
+                          
+
                             <!-- Button trigger modal-->
                             <button type="button" @click="track('<%= data.document_id %>')"
                               class="btn btn-sm btn-primary font-weight-bolder" data-toggle="modal"
@@ -235,6 +240,8 @@
                               Track
                             </button>
 
+
+                           
                           </td>
 
                         </tr>
@@ -364,8 +371,21 @@
                 alert("Somethings went wrong.")
               })
           }
+          ,
+        
+        // viewDoc(document) {
+        //     axios.get(`/viewDoc/${document}`)
+        //       .then(({ data }) => {
+        //         this.results = data;
+        //       })
+        //       .catch(function (error) {
+        //         alert("Somethings went wrong.")
+        //       })
+        //   },
         }
-      })
+        }
+      
+      )
     })
 
     $(function () {

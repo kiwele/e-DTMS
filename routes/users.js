@@ -55,16 +55,6 @@ router.post('/', userController.userLogin)
 
 router.post('/create')
 
-router.get('/logout', function (req, res) {
-  res.cookie('file', dhsjgffhjhdj, {
-    httpOnly: true,
-    secure: false,
-    maxAge: new Date().getTime(),
-  })
-  res.redirect('/index')
-})
-
-
 
 module.exports = router;
 

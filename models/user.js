@@ -127,6 +127,7 @@ module.exports.appload = (info, callback) => {
 module.exports.viewDocument = (userinfo, callback) => {
   sql = 'select distinct a.document_id, c.type_name,b.date_created,d.status_name FROM document_movement as a  JOIN document as b on a.user_id =? and a.document_id = b.document_id JOIN document_type as c ON b.type_id = c.type_id JOIN document_status as d ON d.status_id = b. status_id';
   db.query(sql, userinfo, function (err, data) {
+    
     if (err) throw err;
     return callback(data);
   });
@@ -211,6 +212,7 @@ module.exports.natification = ({ user_id }) => {
     try {
       sql = 'SELECT c.type_name, count(c.type_name) as total FROM document_movement as a JOIN document as b on a.document_destination = ? and a.read_status = 0 and a.document_id = b.document_id JOIN document_type as c ON b.type_id = c.type_id group by c.type_name';
       await db.query(sql, [user_id], function (err, data) {
+
         if (err) throw err;
         let total = 0
         data.forEach(e => {
@@ -241,6 +243,24 @@ module.exports.trackDocument = ({document})=>{
    })
 
 }
+
+module.exports.updateDocument = ({document})=>{
+  return new Promise(async(reject,resolve)=>{
+    try{
+      let sql ='UPDATE document_movement SET read_status = 1 where document_id = ?';
+      await db.query(sql,[document], function(err, data){
+        if (err) throw err;
+       resolve(data)
+       })
+    } catch(error){
+      reject(error)
+    }
+  })
+
+}
+
+
+
 
 
 //getting success position from the database 
@@ -282,10 +302,7 @@ module.exports.destiny = (succ)=>{
 module.exports.updateStatus = (document_id)=>{
 
   let doc_id = document_id.document;
-
   return new Promise(async(resolve,reject)=>{
-    
-     
     try{
       
       let sql = 'UPDATE document_movement SET read_status = 1 WHERE document_id = ?';
@@ -297,9 +314,6 @@ module.exports.updateStatus = (document_id)=>{
       reject(error)
     }
   }); 
-
-
-
 
 }
 
