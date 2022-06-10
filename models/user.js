@@ -1,7 +1,22 @@
 const { date } = require('joi');
 var db = require('../database')
-var userController = ('../controllers/user')
-var auth = require('../utils/auth')
+
+module.exports.checkUser =(user_id)=> {
+
+return new Promise(async(resolve, reject)=>{
+   try{
+
+    var sql1 ='select count(user_id) as a from login_credentials where user_id = ?';
+    db.query(sql1,user_id,(err, data)=>{
+      if(err) throw err;
+      resolve(data[0].a)
+      
+   }) 
+  } catch(error){
+      reject(error)
+    }
+})  
+},
 
 module.exports.signup = function (data) {
   // login credentials insertion
@@ -9,12 +24,17 @@ module.exports.signup = function (data) {
     user_id: data.regnumber,
     password: data.password,
   };
+  
 
-  var sql = "INSERT INTO login_credentials SET ?";
-  db.query(sql, values, function (err, data) {
-    if (err) throw err;
-    console.log("1 record added in login credentials");
-  });
+      var sql = "INSERT INTO login_credentials SET ?";
+
+   var result = db.query(sql, values, (err, data)=>{
+     if(err) throw err;
+    console.log("data successifullly inserted in login credentials")
+   });
+      
+
+
 
   // insertion of user profile data
  
@@ -232,16 +252,102 @@ module.exports.natification = ({ user_id }) => {
 module.exports.trackDocument = ({document})=>{
    return new Promise(async(reject,resolve)=>{
      try{
+       
        let sql ='select date_received, document_destination, user_id from document_movement where document_id = ?';
        await db.query(sql,[document], function(err, data){
-         if (err) throw err;
-        resolve(data)
+         if (err) {throw err;}
+         else{
+           
+          let sql1 ='SELECT position_id FROM user_profile where user_id = ?';
+          db.query(sql1,data[0].document_destination, function(err, data1){
+          if (err){
+            throw err;
+          }  else{
+                
+          let sql2 ='SELECT position_name FROM user_position WHERE position_id = ?';
+          db.query(sql2,data1[0].position_id, function(err, data2){
+            if (err) {throw err;}
+            else{
+                   // sender position
+               let sql3 ='SELECT position_id FROM user_profile where user_id = ?';
+               db.query(sql1,data[0].user_id, function(err, data3){
+               if (err) { throw err;} 
+               else{
+                   
+
+                let sql4 ='SELECT position_name as pname FROM user_position WHERE position_id = ?';
+                db.query(sql4,data3[0].position_id, function(err, data4){
+                  if (err) {throw err;}
+                  else{
+                    
+                  let   trackIfo = {data2, data4, data}
+                    resolve(trackIfo)
+                  }
+                })
+               
+               }
+               
+
+           })
+            }    
+         })
+          }
+
+         
         })
+        
+          // resolve(data)
+         }
+        
+        }) 
+        
+        
      } catch(error){
+       
        reject(error)
      }
    })
 
+}
+module.exports.givePositionId = (user_id)=>{
+  
+  return new Promise(async(reject,resolve)=>{
+    try{
+      
+      let sql ='SELECT position_id FROM user_profile where user_id = ?';
+      await db.query(sql,user_id, function(err, data){
+        if (err) throw err; 
+        resolve(data)
+       })
+      }catch(error){
+      reject(error)
+     }
+  })
+ }
+
+// module.exports.givePositionId = function (user_id , callback) {
+//   sql = 'SELECT position_id FROM user_profile where user_id = ?';
+//   db.query(sql, user_id, function (error, data) {
+
+//     if (error) {
+//       callback(error, null);
+//     } else {
+//       callback(null, data);
+//     }
+//   });
+// }
+module.exports.giveUserPosition = (position_id)=>{
+  return new Promise(async(reject,resolve)=>{
+    try{
+      let sql ='SELECT position_name FROM user_position WHERE position_id = ?';
+      await db.query(sql,position_id, function(err, data){
+        if (err) throw err;
+       resolve(data)
+       })
+    } catch(error){
+      reject(error)
+    }
+  })
 }
 
 module.exports.updateDocument = ({document})=>{
@@ -283,6 +389,7 @@ module.exports.seccessor = (username)=>{
 }
 
 module.exports.destiny = (succ)=>{
+  console.log(succ);
  return new Promise(async(resolve, reject)=>{
       
       try{
@@ -448,14 +555,26 @@ module.exports.respondoffice = (info, callback)=>{
 
 }
 
-module.exports.giverRole =   (userID)=>{
-  return new Promise(async(resolve, reject)=>{
+
+
+module.exports.giverRole = (userID)=>{
+  return new Promise(
+    async(resolve, reject)=>{
        
        try{
-          let sql = 'select role_id from user_profile where user_id = ?';
+          let sql = 'select role_id, count(role_id) as a from user_profile where user_id = ?';
           db.query(sql,userID, (err, data)=>{
-            if (err) throw err;
-            resolve(data[0]['role_id'])
+            if (err)
+            {
+              throw err;
+            } 
+            else if (data[0].a == 0){
+              resolve(data[0].a)
+            }
+            else{
+              resolve(data[0]['role_id'])
+             }
+            
           })
  
        } catch(err){
@@ -463,4 +582,20 @@ module.exports.giverRole =   (userID)=>{
        }
  
      } )
+ }
+
+ module.exports.giveNames = (userID)=>{
+         return new Promise(
+          async(resolve, reject)=>{
+             
+              let sql = 'select first_name, middle_name from user_profile where user_id = ?';
+                db.query(sql,userID, (err, data)=>{
+                  if (err) throw err;
+                  resolve(data)
+                })
+       
+             
+           } )
+
+
  }

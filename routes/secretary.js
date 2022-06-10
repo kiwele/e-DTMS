@@ -14,9 +14,15 @@ var applController = require('../controllers/appload')
 
 env.config()
 router.get('/index2', async (req, res, next) => {
+
+    
     let { username } = jwt.verify(req.cookies.file, process.env.SECRET)
     const notifications = await staffController.natification({ user_id: username })
-    res.render('index2', { notifications })
+
+    let data = auth.details(req);
+    let names = await  userModels.giveNames(data.username)
+    let fullName = names[0].first_name + ' ' + names[0].middle_name;
+    res.render('index2', { notifications,username:fullName })
 })
 
 
@@ -33,9 +39,15 @@ router.get('/index2', async (req, res, next) => {
 router.get('/receive_document', async (req, res) => {
         let { username } = jwt.verify(req.cookies.file, process.env.SECRET)
         const notifications = await staffController.natification({ user_id: username })
+        //  console.log(notifications)
+
+        let data = auth.details(req);
+        let names = await  userModels.giveNames(data.username)
+        let fullName = names[0].first_name + ' ' + names[0].middle_name;
 
         userModels.receiveDocument(username, function (data) {
-            res.render('receive_document', { notifications, fetchData: data });
+            
+            res.render('receive_document', { notifications,username:fullName, fetchData: data });
         });
     })
 
@@ -44,7 +56,12 @@ router.get('/cancel', async (req, res) => {
     
     let { username } = jwt.verify(req.cookies.file, process.env.SECRET)
         const notifications = await staffController.natification({ user_id: username })
-    res.render('cancel', { data: req.query.take[0],data1: req.query.take[1], message: "", notifications });
+       
+        let data = auth.details(req);
+        let names = await  userModels.giveNames(data.username)
+        let fullName = names[0].first_name + ' ' + names[0].middle_name;
+
+    res.render('cancel', { username:fullName, data: req.query.take[0],data1: req.query.take[1], message: "", notifications });
 })
 
 // caceling the documents
@@ -61,16 +78,25 @@ router.post('/cancel', async (req, res, next) => {
     userModels.cancelDocument(cancelInfo)
     let { username } = jwt.verify(req.cookies.file, process.env.SECRET)
         const notifications = await staffController.natification({ user_id: username })
-        res.render('cancel', { data: "",data1:"", message: "Congratulations document has been cancelled" ,notifications});
+       
+        let data = auth.details(req);
+        let names = await  userModels.giveNames(data.username)
+        let fullName = names[0].first_name + ' ' + names[0].middle_name;
+
+        res.render('cancel', { username:fullName, data: "",data1:"", message: "Congratulations document has been cancelled" ,notifications});
 })
 
 
 router.get('/staff_view_document', async (req, res)=>{  
         let { username } = jwt.verify(req.cookies.file, process.env.SECRET)
         const notifications = await staffController.natification({ user_id: username })
+        
+        let data = auth.details(req);
+        let names = await  userModels.giveNames(data.username)
+        let fullName = names[0].first_name + ' ' + names[0].middle_name;
 
          userModels.viewDocument(username, function (data) {
-        res.render('staff_view_document', { fetchData: data, notifications });
+        res.render('staff_view_document', {username:fullName, fetchData: data, notifications });
     });        
 })
 
@@ -100,7 +126,11 @@ router.get('/feedback',auth.verify, async (req, res) => {
     let data = auth.details(req);
     let { username } = jwt.verify(req.cookies.file, process.env.SECRET)
     const notifications = await staffController.natification({ user_id: username })
-    res.render('staff_create_document', {message:"",username:data.username, notifications})
+
+    let names = await  userModels.giveNames(data.username)
+    let fullName = names[0].first_name + ' ' + names[0].middle_name;
+
+    res.render('staff_create_document', {username:fullName,message:"",notifications})
   });
   
   router.post('/feedback',auth.verify, multer({
@@ -132,9 +162,11 @@ router.get('/feedback',auth.verify, async (req, res) => {
   let { username } = jwt.verify(req.cookies.file, process.env.SECRET)
   const notifications = await staffController.natification({ user_id: username })
 
+  let names = await  userModels.giveNames(data.username)
+  let fullName = names[0].first_name + ' ' + names[0].middle_name;
+
   
-  res.render("staff_create_document", 
-  { message: "Congratulations!! document responded successifully.", notifications });
+  res.render("staff_create_document", {username:fullName, message: "Congratulations!! document responded successifully.", notifications });
   
 })
 
@@ -147,8 +179,11 @@ router.get('/receive_response', async (req, res) => {
     
     const office_id = await userModels.giveOfficeId(data.username);
 
+    let names = await  userModels.giveNames(data.username)
+    let fullName = names[0].first_name + ' ' + names[0].middle_name;
+
     userModels.receiveResponce(office_id, function (data) {
-        res.render('response', { notifications, fetchData: data });
+        res.render('response', {username:fullName, notifications, fetchData: data });
     });
 })
 
@@ -164,20 +199,23 @@ router.get('/push_response', async (req, res) => {
     
     const succ =  await userModels.seccessor(student)     
     let destiny = await userModels.destiny(succ);
+
+    let names = await  userModels.giveNames(data.username)
+    let fullName = names[0].first_name + ' ' + names[0].middle_name;
     
     // performend when final sender is not supposed to send to student
     if(destiny != data.username){
        
         let { username } = jwt.verify(req.cookies.file, process.env.SECRET)
         const notifications = await staffController.natification({ user_id: username })
-        res.render('mvr_office', { data: student, data1: document_id, message: "", notifications });
+        res.render('mvr_office', {username:fullName, data: student, data1: document_id, message: "", notifications });
         
         
     } else {
         // send direct to student
         let { username } = jwt.verify(req.cookies.file, process.env.SECRET)
         const notifications = await staffController.natification({ user_id: username })
-        res.render('mvr_student', { data: student,data1: document_id, message: "", notifications });
+        res.render('mvr_student', {username:fullName, data: student,data1: document_id, message: "", notifications });
     } 
 })
 
@@ -185,6 +223,9 @@ router.get('/push_response', async (req, res) => {
 router.post('/rsp_office', async (req, res)=>{
    
     let data = auth.details(req);
+
+    let names = await  userModels.giveNames(data.username)
+    let fullName = names[0].first_name + ' ' + names[0].middle_name;
     
     office = req.body.office_id;
     student_responded = req.body.student_no;
@@ -195,7 +236,8 @@ router.post('/rsp_office', async (req, res)=>{
    userModels.respondoffice(info); 
    let { username } = jwt.verify(req.cookies.file, process.env.SECRET)
         const notifications = await staffController.natification({ user_id: username })
-   res.render('mvr_office', { data: "",data1: "", message: "Congratulation document responded successifull", notifications });
+
+   res.render('mvr_office', {username:fullName, data: "",data1: "", message: "Congratulation document responded successifull", notifications });
 
 
 })
@@ -203,6 +245,8 @@ router.post('/rsp_office', async (req, res)=>{
 router.post('/rsp_student', async (req, res)=>{
    
     let user_id = auth.details(req)
+    let names = await  userModels.giveNames(user_id.username)
+    let fullName = names[0].first_name + ' ' + names[0].middle_name;
 
     var respondInfo = {
         sender: user_id.username,
@@ -214,7 +258,7 @@ router.post('/rsp_student', async (req, res)=>{
     userModels.cancelDocument(respondInfo)
     let { username } = jwt.verify(req.cookies.file, process.env.SECRET)
         const notifications = await staffController.natification({ user_id: username })
-        res.render('mvr_student', { data: "",data1:"", message: "Congratulations responce has been sent" ,notifications});
+        res.render('mvr_student', {username:fullName, data: "",data1:"", message: "Congratulations responce has been sent" ,notifications});
 
 
 })

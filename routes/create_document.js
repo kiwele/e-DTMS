@@ -17,7 +17,11 @@ async (req, res) => {
   let data = auth.details(req);
   let { username } = jwt.verify(req.cookies.file, process.env.SECRET)
   const notifications = await staffController.natification({ user_id: username })
-  res.render('create_document', {message:"",username:data.username, notifications})
+
+  let names = await  userModels.giveNames(data.username)
+  let fullName = names[0].first_name + ' ' + names[0].middle_name;
+
+  res.render('create_document', {message:"",username:fullName, notifications})
 }
 );
 
